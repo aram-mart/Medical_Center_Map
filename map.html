@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EFES Insurance Medical Center</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script type="module">
+        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+        const SUPABASE_URL = "https://rdlvbyljjvnqhqnuuedh.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkbHZieWxqanZucWhxbnV1ZWRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwNzE0NjMsImV4cCI6MjA1ODY0NzQ2M30.Mrk2TybfM8u5O8qNJ_WN2XPVfGmAkNQxx6UU6ZsOXKo";
+
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function fetchMedicalCenters() {
+            const { data, error } = await supabase.from("medical_centers").select("*");
+
+            if (error) {
+                console.error("Error fetching medical centers:", error);
+                return;
+            }
+
+            renderMap(data);
+        }
+
+        function renderMap(medicalCenters) {
+            const map = L.map("map", {
+                center: [40.1792, 44.4991], // Yerevan city center
+                zoom: 13,
+                attributionControl: false
+            });
+
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                maxZoom: 19,
+                attribution: "© OpenStreetMap contributors"
+            }).addTo(map);
+
+            medicalCenters.forEach(center => {
+                L.marker([center.latitude, center.longitude]).addTo(map)
+                    .bindPopup(`<b>${center.name}</b><br><small>${center.address}</small>`);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchMedicalCenters);
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+
+        header img {
+            height: 50px;
+            margin-right: 15px;
+        }
+
+        h1 {
+            margin: 20px;
+            text-align: center;
+        }
+
+        #map {
+            height: 820px;
+            width: 100%;
+        }
+
+        .leaflet-control-attribution {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            #map {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
+        <h1>EFES Insurance Medical Center</h1>
+    </header>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</body>
+</html>

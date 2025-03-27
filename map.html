@@ -5,23 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EFES Insurance Medical Center</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script type="module">
-        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-        const SUPABASE_URL = "https://rdlvbyljjvnqhqnuuedh.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkbHZieWxqanZucWhxbnV1ZWRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwNzE0NjMsImV4cCI6MjA1ODY0NzQ2M30.Mrk2TybfM8u5O8qNJ_WN2XPVfGmAkNQxx6UU6ZsOXKo";
-
-        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
+    
+    <script>
         async function fetchMedicalCenters() {
-            const { data, error } = await supabase.from("medical_centers").select("*");
+            try {
+                const response = await fetch("/api/medical-centers"); // Fetch from Deno backend
+                const data = await response.json();
+                
+                console.log("Fetched Data:", data); // Debugging
 
-            if (error) {
+                if (!data || data.length === 0) {
+                    console.warn("No medical centers found.");
+                    return;
+                }
+
+                renderMap(data);
+            } catch (error) {
                 console.error("Error fetching medical centers:", error);
-                return;
             }
-
-            renderMap(data);
         }
 
         function renderMap(medicalCenters) {

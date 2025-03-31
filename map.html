@@ -28,6 +28,21 @@
         h1 {
             margin: 20px;
             text-align: center;
+            flex-grow: 1;
+        }
+
+        #search-container {
+            text-align: center;
+            margin: 10px;
+        }
+
+        #search {
+            width: 80%;
+            max-width: 400px;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         #map {
@@ -51,37 +66,54 @@
         <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
         <h1>Medical Centers in Yerevan</h1>
     </header>
-    
+
+    <div id="search-container">
+        <input type="text" id="search" placeholder="🔍 Search by name..." oninput="filterMarkers()">
+    </div>
+
     <div id="map"></div>
-    
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Initialize the map centered on Yerevan
         var map = L.map('map').setView([40.1792, 44.4991], 13);
 
-        // Add OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Function to fetch and display medical centers
+        let markers = [];
+        let allCenters = [];
+
         async function loadMedicalCenters() {
             try {
                 const response = await fetch("https://medical-centers-map.deno.dev/api/centers");
-                const centers = await response.json();
-
-                centers.forEach(center => {
-                    L.marker([center.lat, center.lng])
-                        .addTo(map)
-                        .bindPopup(`<b>${center.name}</b><br>${center.address}`);
-                });
+                allCenters = await response.json();
+                displayMarkers(allCenters);
             } catch (error) {
                 console.error("Error loading medical centers:", error);
             }
         }
 
-        loadMedicalCenters(); // Fetch and display markers
+        function displayMarkers(centers) {
+            markers.forEach(marker => map.removeLayer(marker)); // Remove existing markers
+            markers = [];
+
+            centers.forEach(center => {
+                let marker = L.marker([center.lat, center.lng])
+                    .addTo(map)
+                    .bindPopup(`<b>${center.name}</b><br>${center.address}`);
+                markers.push(marker);
+            });
+        }
+
+        function filterMarkers() {
+            let query = document.getElementById("search").value.toLowerCase();
+            let filteredCenters = allCenters.filter(center => center.name.toLowerCase().includes(query));
+            displayMarkers(filteredCenters);
+        }
+
+        loadMedicalCenters();
     </script>
 </body>
 </html>

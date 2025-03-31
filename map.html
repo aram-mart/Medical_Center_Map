@@ -27,18 +27,27 @@
 
         h1 {
             margin: 20px;
-            text-align: center;
             flex-grow: 1;
+            text-align: center;
         }
 
-        #search-container {
-            text-align: center;
+        #controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
             margin: 10px;
         }
 
         #search {
-            width: 80%;
-            max-width: 400px;
+            width: 60%;
+            max-width: 300px;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #language-selector {
             padding: 8px;
             font-size: 16px;
             border: 1px solid #ccc;
@@ -67,8 +76,12 @@
         <h1>Medical Centers in Yerevan</h1>
     </header>
 
-    <div id="search-container">
+    <div id="controls">
         <input type="text" id="search" placeholder="🔍 Search by name..." oninput="filterMarkers()">
+        <select id="language-selector" onchange="changeLanguage()">
+            <option value="hy">🇦🇲 Armenian</option>
+            <option value="en">🇬🇧 English</option>
+        </select>
     </div>
 
     <div id="map"></div>
@@ -84,6 +97,12 @@
 
         let markers = [];
         let allCenters = [];
+        let currentLanguage = "hy"; // Default language: Armenian
+
+        // Dictionary for translations (add more translations here)
+        const translations = {
+            "ՎԱՐԴԱՆԱՆՑ ՆՈՐԱՐԱՐԱԿԱՆ ԲԺՇԿՈՒԹՅԱՆ ԿԵՆՏՐՈՆ": "Vardanants Innovative Medical Center"
+        };
 
         async function loadMedicalCenters() {
             try {
@@ -100,17 +119,27 @@
             markers = [];
 
             centers.forEach(center => {
+                let displayName = (currentLanguage === "en" && translations[center.name]) ? translations[center.name] : center.name;
+
                 let marker = L.marker([center.lat, center.lng])
                     .addTo(map)
-                    .bindPopup(`<b>${center.name}</b><br>${center.address}`);
+                    .bindPopup(`<b>${displayName}</b><br>${center.address}`);
                 markers.push(marker);
             });
         }
 
         function filterMarkers() {
             let query = document.getElementById("search").value.toLowerCase();
-            let filteredCenters = allCenters.filter(center => center.name.toLowerCase().includes(query));
+            let filteredCenters = allCenters.filter(center => {
+                let displayName = (currentLanguage === "en" && translations[center.name]) ? translations[center.name] : center.name;
+                return displayName.toLowerCase().includes(query);
+            });
             displayMarkers(filteredCenters);
+        }
+
+        function changeLanguage() {
+            currentLanguage = document.getElementById("language-selector").value;
+            displayMarkers(allCenters); // Refresh map with new language
         }
 
         loadMedicalCenters();

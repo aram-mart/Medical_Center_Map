@@ -5,41 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Centers Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+
+        header img {
+            height: 50px;
+            margin-right: 15px;
+        }
+
+        h1 {
+            margin: 20px;
+            text-align: center;
+        }
+
+        #map {
+            height: 820px;
+            width: 100%;
+        }
+        .leaflet-control-attribution {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            #map {
+                height: 400px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Medical Centers</h1>
-    <div id="map" style="height: 500px;"></div>
-
+    <header>
+        <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
+        <h1>EFES Insurance Medical Center</h1>
+    </header>
+    
+    <div id="map"></div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         var map = L.map('map', {
-            center: [40.1792, 44.4991], // Coordinates of Yerevan city center (you can change this to the center of your data)
+            center: [40.1792, 44.4991], // Coordinates of Yerevan city center
             zoom: 13,
             attributionControl: false // Disable the default attribution control
         });
 
-        // Add OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
-        // Fetch medical centers data from the server
-        async function loadMap() {
-            const response = await fetch("https://medical-centers-map.deno.dev/"); // Replace with your actual Deno Deploy URL
-            const centers = await response.json();
+        async function loadMedicalCenters() {
+            const response = await fetch("https://medical-centers-map.deno.dev/"); // Replace with your Deno Deploy API URL
+            const data = await response.json();
 
             // Add markers for each medical center
-            centers.forEach(center => {
-                const { lat, lng, name, address } = center;
-                
-                L.marker([lat, lng])
-                    .addTo(map)
-                    .bindPopup(`<b>${name}</b><br>${address}`);
+            data.forEach(function(center) {
+                L.marker([center.lat, center.lng]).addTo(map)
+                    .bindPopup(`<b>${center.name}</b><br><small>${center.address}</small>`); // Show name and address in popup
             });
         }
 
-        loadMap();
+        loadMedicalCenters();
     </script>
 </body>
 </html>

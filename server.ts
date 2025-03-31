@@ -16,9 +16,10 @@ function getContentType(filePath: string): string {
   return contentTypes[extension || ""] || "application/octet-stream";
 }
 
-// Supabase credentials
+
 const SUPABASE_URL = "https://rdlvbyljjvnqhqnuuedh.supabase.co";
-const SUPABASE_KEY = "your-supabase-key";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkbHZieWxqanZucWhxbnV1ZWRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMwNzE0NjMsImV4cCI6MjA1ODY0NzQ2M30.Mrk2TybfM8u5O8qNJ_WN2XPVfGmAkNQxx6UU6ZsOXKo";
+
 
 const handler = async (request: Request): Promise<Response> => {
   const url = new URL(request.url);

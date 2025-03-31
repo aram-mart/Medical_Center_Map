@@ -26,7 +26,7 @@
 
         // Fetch medical centers data from the server
         async function loadMap() {
-            const response = await fetch("https://your-deno-deploy-url"); // Replace with your actual Deno Deploy URL
+            const response = await fetch("https://medical-centers-map.deno.dev/"); // Replace with your actual Deno Deploy URL
             const centers = await response.json();
 
             // Add markers for each medical center

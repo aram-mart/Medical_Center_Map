@@ -68,7 +68,7 @@
         // Function to fetch and display medical centers
         async function loadMedicalCenters() {
             try {
-                const response = await fetch("https://medical-centers-map.deno.dev/"); // Your Deno Deploy API
+                const response = await fetch("https://medical-centers-map.deno.dev/api/centers");
                 const centers = await response.json();
 
                 centers.forEach(center => {

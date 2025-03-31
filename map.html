@@ -27,27 +27,18 @@
 
         h1 {
             margin: 20px;
-            flex-grow: 1;
             text-align: center;
+            flex-grow: 1;
         }
 
-        #controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
+        #search-container {
+            text-align: center;
             margin: 10px;
         }
 
         #search {
-            width: 60%;
-            max-width: 300px;
-            padding: 8px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        #language-selector {
+            width: 80%;
+            max-width: 400px;
             padding: 8px;
             font-size: 16px;
             border: 1px solid #ccc;
@@ -73,15 +64,11 @@
 <body>
     <header>
         <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
-        <h1>Medical Centers in Yerevan</h1>
+        <h1>Medical Centers</h1>
     </header>
 
-    <div id="controls">
+    <div id="search-container">
         <input type="text" id="search" placeholder="🔍 Search by name..." oninput="filterMarkers()">
-        <select id="language-selector" onchange="changeLanguage()">
-            <option value="hy">🇦🇲 Armenian</option>
-            <option value="en">🇬🇧 English</option>
-        </select>
     </div>
 
     <div id="map"></div>
@@ -97,12 +84,6 @@
 
         let markers = [];
         let allCenters = [];
-        let currentLanguage = "hy"; // Default language: Armenian
-
-        // Dictionary for translations (add more translations here)
-        const translations = {
-            "ՎԱՐԴԱՆԱՆՑ ՆՈՐԱՐԱՐԱԿԱՆ ԲԺՇԿՈՒԹՅԱՆ ԿԵՆՏՐՈՆ": "Vardanants Innovative Medical Center"
-        };
 
         async function loadMedicalCenters() {
             try {
@@ -119,27 +100,17 @@
             markers = [];
 
             centers.forEach(center => {
-                let displayName = (currentLanguage === "en" && translations[center.name]) ? translations[center.name] : center.name;
-
                 let marker = L.marker([center.lat, center.lng])
                     .addTo(map)
-                    .bindPopup(`<b>${displayName}</b><br>${center.address}`);
+                    .bindPopup(`<b>${center.name}</b><br>${center.address}`);
                 markers.push(marker);
             });
         }
 
         function filterMarkers() {
             let query = document.getElementById("search").value.toLowerCase();
-            let filteredCenters = allCenters.filter(center => {
-                let displayName = (currentLanguage === "en" && translations[center.name]) ? translations[center.name] : center.name;
-                return displayName.toLowerCase().includes(query);
-            });
+            let filteredCenters = allCenters.filter(center => center.name.toLowerCase().includes(query));
             displayMarkers(filteredCenters);
-        }
-
-        function changeLanguage() {
-            currentLanguage = document.getElementById("language-selector").value;
-            displayMarkers(allCenters); // Refresh map with new language
         }
 
         loadMedicalCenters();

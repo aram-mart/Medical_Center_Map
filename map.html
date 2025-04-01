@@ -37,7 +37,7 @@
 
         #main-container {
             display: flex;
-            height: calc(100vh - 20px); /* Ensure it fills the remaining space */
+            height: calc(100vh - 20px); /* Ensure it fills the remaining space, excluding the header */
         }
 
         #left-panel {
@@ -67,7 +67,7 @@
         }
 
         #map {
-            height: 100%;
+            height: calc(100% - 3%); /* Make sure the map takes the full height minus the 3% margin */
             width: 100%;
         }
 

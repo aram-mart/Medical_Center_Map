@@ -119,6 +119,10 @@
             left: 0;
             border-top: 1px solid #ddd; /* Optional border at the top of the line */
         }
+        
+        .center-item {
+            font-family: "Arial", sans-serif; /* Change to your desired font */
+        }
     </style>
 </head>
 <body>
@@ -183,6 +187,7 @@
             centers.forEach(center => {
                 const centerDiv = document.createElement('div');
                 centerDiv.classList.add('center-item');
+                centerDiv.style.fontFamily = "Arial, sans-serif"; // Change font dynamically
                 centerDiv.innerHTML = `<b>${center.name}</b><br>${center.address}`;
                 centerDiv.onclick = () => {
                     map.setView([center.lat, center.lng], 15); // Center map on the selected medical center

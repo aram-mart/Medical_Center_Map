@@ -31,17 +31,20 @@
             flex-grow: 1;
         }
 
-        #controls {
+        #search-container {
             text-align: center;
             margin: 10px;
         }
 
-        #search, #city {
+        #search, #city-dropdown {
+            width: 80%;
+            max-width: 400px;
             padding: 8px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            margin: 5px;
+            display: block;
+            margin: 10px auto;
         }
 
         #map {
@@ -63,18 +66,12 @@
 <body>
     <header>
         <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
-        <h1>Medical Centers in Armenia</h1>
+        <h1>Medical Centers</h1>
     </header>
 
-    <div id="controls">
-        <label for="city" style="font-weight: bold;">📍 Select a city:</label>
-        <select id="city" onchange="filterMarkers()">
-            <option value="">All Cities</option>
-            <option value="Երևան">Երևան</option>
-            <option value="Գյումրի">Գյումրի</option>
-            <option value="Վանաձոր">Վանաձոր</option>
-            <option value="Հրազդան">Հրազդան</option>
-            <option value="Արմավիր">Արմավիր</option>
+    <div id="search-container">
+        <select id="city-dropdown" onchange="filterByCity()">
+            <option value="">🌍 All Cities</option>
         </select>
         <input type="text" id="search" placeholder="🔍 Search by name..." oninput="filterMarkers()">
     </div>
@@ -103,6 +100,23 @@
             }
         }
 
+        async function loadCities() {
+            try {
+                const response = await fetch("https://medical-centers-map.deno.dev/api/cities");
+                const cities = await response.json();
+                let dropdown = document.getElementById("city-dropdown");
+
+                cities.forEach(city => {
+                    let option = document.createElement("option");
+                    option.value = city;
+                    option.textContent = city;
+                    dropdown.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Error loading cities:", error);
+            }
+        }
+
         function displayMarkers(centers) {
             markers.forEach(marker => map.removeLayer(marker));
             markers = [];
@@ -110,25 +124,27 @@
             centers.forEach(center => {
                 let marker = L.marker([center.lat, center.lng])
                     .addTo(map)
-                    .bindPopup(`<b>${center.name}</b><br>${center.address}`);
+                    .bindPopup(`<b>${center.name}</b><br>${center.address}<br><i>${center.city}</i>`);
                 markers.push(marker);
             });
         }
 
         function filterMarkers() {
-            let searchQuery = document.getElementById("search").value.toLowerCase();
-            let selectedCity = document.getElementById("city").value;
+            let query = document.getElementById("search").value.toLowerCase();
+            let filteredCenters = allCenters.filter(center => center.name.toLowerCase().includes(query));
+            displayMarkers(filteredCenters);
+        }
 
-            let filteredCenters = allCenters.filter(center => {
-                let matchesSearch = center.name.toLowerCase().includes(searchQuery);
-                let matchesCity = selectedCity === "" || center.address.includes(selectedCity);
-                return matchesSearch && matchesCity;
-            });
-
+        function filterByCity() {
+            let selectedCity = document.getElementById("city-dropdown").value;
+            let filteredCenters = selectedCity
+                ? allCenters.filter(center => center.city === selectedCity)
+                : allCenters;
             displayMarkers(filteredCenters);
         }
 
         loadMedicalCenters();
+        loadCities();
     </script>
 </body>
 </html>

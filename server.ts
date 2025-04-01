@@ -8,12 +8,13 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 serve(async (req) => {
   const url = new URL(req.url);
-  
-  if (url.pathname === "/api/centers") {  // ✅ Correct API route
+  console.log("Incoming request:", url.pathname);  // 🔹 Log requests
+
+  if (url.pathname === "/api/centers") {
     let city = url.searchParams.get("city");
-    
+
     let query = supabase.from("medical_centers").select("id, name, address, lat, lng");
-    
+
     if (city) {
       query = query.ilike("address", `%${city}%`);
     }
@@ -29,5 +30,6 @@ serve(async (req) => {
     });
   }
 
+  console.log("404 Not Found:", url.pathname);
   return new Response("404 Not Found", { status: 404 });
 });

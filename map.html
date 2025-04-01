@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Centers Map</title>
+    
+    <!-- Google Fonts: Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -81,6 +86,7 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             cursor: pointer;
+            font-family: 'Montserrat', sans-serif; /* Apply Montserrat font */
         }
 
         .center-item:hover {
@@ -118,10 +124,6 @@
             bottom: 0;
             left: 0;
             border-top: 1px solid #ddd; /* Optional border at the top of the line */
-        }
-        
-        .center-item {
-            font-family: "Arial", sans-serif; /* Change to your desired font */
         }
     </style>
 </head>
@@ -187,7 +189,7 @@
             centers.forEach(center => {
                 const centerDiv = document.createElement('div');
                 centerDiv.classList.add('center-item');
-                centerDiv.style.fontFamily = "Arial, sans-serif"; // Change font dynamically
+                centerDiv.style.fontFamily = "'Montserrat', sans-serif"; // Apply Montserrat font dynamically
                 centerDiv.innerHTML = `<b>${center.name}</b><br>${center.address}`;
                 centerDiv.onclick = () => {
                     map.setView([center.lat, center.lng], 15); // Center map on the selected medical center

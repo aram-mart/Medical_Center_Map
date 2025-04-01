@@ -8,17 +8,14 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 serve(async (req) => {
   const url = new URL(req.url);
-  const city = url.searchParams.get("city"); // Get city from URL parameters
-
-  if (url.pathname === "/") {
-    return new Response("API is running. Use /api/centers for data.", { status: 200 });
-  }
-
-  if (url.pathname === "/api/centers") {
+  
+  if (url.pathname === "/api/centers") {  // ✅ Correct API route
+    let city = url.searchParams.get("city");
+    
     let query = supabase.from("medical_centers").select("id, name, address, lat, lng");
-
+    
     if (city) {
-      query = query.ilike("address", `%${city}%`); // Case-insensitive search for city in address
+      query = query.ilike("address", `%${city}%`);
     }
 
     const { data, error } = await query;
@@ -32,5 +29,5 @@ serve(async (req) => {
     });
   }
 
-  return new Response("Not Found", { status: 404 });
+  return new Response("404 Not Found", { status: 404 });
 });

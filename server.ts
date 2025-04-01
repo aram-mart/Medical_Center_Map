@@ -35,42 +35,23 @@ const HTML_PAGE = await Deno.readTextFile("map.html");
 
 serve(async (req) => {
   const url = new URL(req.url);
-
+  
+  // Serve the HTML page when accessing the root
   if (url.pathname === "/") {
     return new Response(HTML_PAGE, {
       headers: { "Content-Type": "text/html" },
     });
   }
 
+  // API route to return JSON data
   if (url.pathname === "/api/centers") {
-    const { data, error } = await supabase
-      .from("medical_centers")
-      .select("id, name, address, city, lat, lng");
-
+    const { data, error } = await supabase.from("medical_centers").select("id, name, address, lat, lng");
+  
     if (error) {
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
-      });
+      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
     }
-
+  
     return new Response(JSON.stringify(data), {
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  if (url.pathname === "/api/cities") {
-    const { data, error } = await supabase
-      .from("medical_centers")
-      .select("city")
-      .distinct();
-
-    if (error) {
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
-      });
-    }
-
-    return new Response(JSON.stringify(data.map((c) => c.city)), {
       headers: { "Content-Type": "application/json" },
     });
   }

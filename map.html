@@ -31,18 +31,17 @@
             flex-grow: 1;
         }
 
-        #search-container {
+        #controls {
             text-align: center;
             margin: 10px;
         }
 
-        #search {
-            width: 80%;
-            max-width: 400px;
+        #search, #city {
             padding: 8px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            margin: 5px;
         }
 
         #map {
@@ -64,10 +63,19 @@
 <body>
     <header>
         <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
-        <h1>Medical Centers</h1>
+        <h1>Medical Centers in Armenia</h1>
     </header>
 
-    <div id="search-container">
+    <div id="controls">
+        <label for="city" style="font-weight: bold;">📍 Select a city:</label>
+        <select id="city" onchange="filterMarkers()">
+            <option value="">All Cities</option>
+            <option value="Երևան">Երևան</option>
+            <option value="Գյումրի">Գյումրի</option>
+            <option value="Վանաձոր">Վանաձոր</option>
+            <option value="Հրազդան">Հրազդան</option>
+            <option value="Արմավիր">Արմավիր</option>
+        </select>
         <input type="text" id="search" placeholder="🔍 Search by name..." oninput="filterMarkers()">
     </div>
 
@@ -96,7 +104,7 @@
         }
 
         function displayMarkers(centers) {
-            markers.forEach(marker => map.removeLayer(marker)); // Remove existing markers
+            markers.forEach(marker => map.removeLayer(marker));
             markers = [];
 
             centers.forEach(center => {
@@ -108,8 +116,15 @@
         }
 
         function filterMarkers() {
-            let query = document.getElementById("search").value.toLowerCase();
-            let filteredCenters = allCenters.filter(center => center.name.toLowerCase().includes(query));
+            let searchQuery = document.getElementById("search").value.toLowerCase();
+            let selectedCity = document.getElementById("city").value;
+
+            let filteredCenters = allCenters.filter(center => {
+                let matchesSearch = center.name.toLowerCase().includes(searchQuery);
+                let matchesCity = selectedCity === "" || center.address.includes(selectedCity);
+                return matchesSearch && matchesCity;
+            });
+
             displayMarkers(filteredCenters);
         }
 

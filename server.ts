@@ -45,7 +45,7 @@ serve(async (req) => {
 
   // API route to return JSON data
   if (url.pathname === "/api/centers") {
-    const { data, error } = await supabase.from("medical_centers").select("id, name, address, lat, lng");
+    const { data, error } = await supabase.from("medical_centers").select("id, name, address, lat, lng, phone_number");
   
     if (error) {
       return new Response(JSON.stringify({ error: error.message }), { status: 500 });

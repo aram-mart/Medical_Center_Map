@@ -100,7 +100,7 @@
         .center-item a {
             color: black;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: normal; /* Phone number should not be bold */
         }
 
         .center-item a:hover {
@@ -231,9 +231,8 @@
                 centerDiv.innerHTML = `
                     <b>${center.name}</b>
                     <p>${center.address}</p>
-                    <p><a href="tel:${center.phone_number.replace(/\s+/g, '')}" style="color: black; text-decoration: none;">${center.phone_number}</a></p>
+                    <p><a href="tel:${center.phone_number.replace(/\s+/g, '')}">${center.phone_number}</a></p>
                 `;
-
 
 
                 centerDiv.onclick = () => {

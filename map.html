@@ -148,6 +148,15 @@
             left: 0;
             border-top: 1px solid #ddd;
         }
+
+        .center-item b {
+            display: block;
+            margin-bottom: 5px; /* Space between title and address */
+        }
+
+        .center-item p {
+            margin: 5px 0; /* Uniform spacing between elements */
+        }
         
     </style>
 </head>
@@ -218,8 +227,14 @@
                     ? `<a href="tel:${center.phone_number.replace(/\s+/g, '')}">${center.phone_number}</a>` 
                     : "No phone available";
                 
-                centerDiv.innerHTML = `<b>${center.name}</b><br><br>${center.address}<br><br>${phoneLink}`;
                 
+                centerDiv.innerHTML = `
+                    <b>${center.name}</b>
+                    <p>${center.address}</p>
+                    <p><a href="tel:${center.phone_number.replace(/\s+/g, '')}">${center.phone_number}</a></p>
+                `;
+
+
                 centerDiv.onclick = () => {
                     map.setView([center.lat, center.lng], 15); // Center map on the selected medical center
                 };

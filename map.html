@@ -125,6 +125,17 @@
             left: 0;
             border-top: 1px solid #ddd; /* Optional border at the top of the line */
         }
+
+        .center-item a {
+            color: black; /* Set link color to black */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold; /* Optional: Make it bold */
+        }
+
+        .center-item a:hover {
+            text-decoration: underline; /* Optional: Underline on hover */
+        }
+
     </style>
 </head>
 <body>
@@ -191,7 +202,7 @@
                 centerDiv.classList.add('center-item');
                 centerDiv.style.fontFamily = "'Montserrat', sans-serif"; // Apply Montserrat font dynamically
                 
-                // Check if the center has a phone number
+                // Format the phone number as a clickable black link
                 let phoneLink = center.phone_number 
                     ? `<a href="tel:${center.phone_number.replace(/\s+/g, '')}">${center.phone_number}</a>` 
                     : "No phone available";
@@ -204,6 +215,7 @@
                 listContainer.appendChild(centerDiv);
             });
         }
+
 
 
         function filterMarkers() {

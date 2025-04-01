@@ -190,7 +190,7 @@
                 const centerDiv = document.createElement('div');
                 centerDiv.classList.add('center-item');
                 centerDiv.style.fontFamily = "'Montserrat', sans-serif"; // Apply Montserrat font dynamically
-                centerDiv.innerHTML = `<b>${center.name}</b><br>${center.address}`;
+                centerDiv.innerHTML = `<b>${center.name}</b><br>${center.address}<br>${center.phone_number}`;
                 centerDiv.onclick = () => {
                     map.setView([center.lat, center.lng], 15); // Center map on the selected medical center
                 };

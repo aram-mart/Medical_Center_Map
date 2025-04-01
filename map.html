@@ -190,13 +190,21 @@
                 const centerDiv = document.createElement('div');
                 centerDiv.classList.add('center-item');
                 centerDiv.style.fontFamily = "'Montserrat', sans-serif"; // Apply Montserrat font dynamically
-                centerDiv.innerHTML = `<b>${center.name}</b><br><br>${center.address}<br><br>${center.phone_number}`;
+                
+                // Check if the center has a phone number
+                let phoneLink = center.phone_number 
+                    ? `<a href="tel:${center.phone_number.replace(/\s+/g, '')}">${center.phone_number}</a>` 
+                    : "No phone available";
+                
+                centerDiv.innerHTML = `<b>${center.name}</b><br><br>${center.address}<br><br>${phoneLink}`;
+                
                 centerDiv.onclick = () => {
                     map.setView([center.lat, center.lng], 15); // Center map on the selected medical center
                 };
                 listContainer.appendChild(centerDiv);
             });
         }
+
 
         function filterMarkers() {
             let query = document.getElementById("search").value.toLowerCase();

@@ -204,12 +204,13 @@
         }
 
         var customIcon = L.icon({
-            iconUrl: 'hospital.png', // Replace with your PNG file path
-            iconSize: [32, 32], // Adjust size as needed
-            iconAnchor: [16, 32], // Anchor so the bottom of the icon points to the location
-            popupAnchor: [0, -32] // Position the popup above the marker
+            iconUrl: 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/hospital.png',
+            iconSize: [32, 32], // Adjust as needed
+            iconAnchor: [16, 32], 
+            popupAnchor: [0, -32]
         });
 
+        
         function displayMarkers(centers) {
             markers.forEach(marker => map.removeLayer(marker)); // Remove existing markers
             markers = [];

@@ -226,7 +226,9 @@
                     .addTo(map)
                     .bindPopup(`<b>${center.name}</b><br>${center.address}`, {
                         maxWidth: 800,  // Set max width of the popup
-                        maxHeight: 500  // Set max height of the popup
+                        maxHeight: 500, // Set max height of the popup
+                        minWidth: 400,  // Set max width of the popup
+                        minHeight: 200 
                     });
                 
                 markers.push(marker);

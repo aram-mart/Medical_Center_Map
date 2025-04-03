@@ -216,6 +216,7 @@
         });
 
 
+
         function displayMarkers(centers) {
             markers.forEach(marker => map.removeLayer(marker)); // Remove existing markers
             markers = [];
@@ -223,14 +224,17 @@
             centers.forEach(center => {
                 let marker = L.marker([center.lat, center.lng], { icon: customIcon }) // Use custom icon
                     .addTo(map)
-                    .bindPopup(`<b>${center.name}</b><br>${center.address}`);
+                    .bindPopup(`<b>${center.name}</b><br>${center.address}`, {
+                        maxWidth: 400,  // Set max width of the popup
+                        maxHeight: 200  // Set max height of the popup
+                    });
                 
                 markers.push(marker);
 
-                // Store the marker reference inside the center object
                 center.marker = marker;
             });
         }
+
 
         function displayCentersList(centers) {
             const listContainer = document.getElementById('centers-list');

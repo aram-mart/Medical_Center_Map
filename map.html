@@ -256,11 +256,11 @@
 
                 
                 centerDiv.onclick = () => {
-                    map.setView([center.lat, center.lng], 15, { animate: true }); // Move map to location
+                    map.setView([center.lat, center.lng], 2, { animate: true }); // Move map to location
                     center.marker.openPopup(); // Open the popup on the selected marker
                     setTimeout(() => {
                         map.panTo(center.marker.getLatLng()); // Ensure the marker is centered
-                    }, 10); // Delay to allow animation
+                    }, 300); // Delay to allow animation
                 };
 
 

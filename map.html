@@ -11,17 +11,163 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
-        /* Your existing CSS styles here */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            box-sizing: border-box;
+            overflow: hidden; /* Prevent body scroll */
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+
+        header img {
+            height: 50px;
+            margin-right: 15px;
+        }
+
+        h1 {
+            margin: 20px;
+            text-align: center;
+            flex-grow: 1;
+            font-size: 22px;
+        }
+
+        #main-container {
+            display: flex;
+            height: calc(100vh - 70px); /* Full height minus header */
+        }
+
+        #left-panel {
+            width: 25%;
+            padding: 10px;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+            height: 100%;
+            background-color: #f9f9f9;
+        }
+
+        #right-panel {
+            width: 75%;
+            height: 100%;
+        }
+
+        #search-container {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        #search {
+            width: 80%;
+            max-width: 400px;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #map {
+            width: 95%;
+            height: 90%;
+            margin: 3% auto;
+            display: block;
+        }
+
+
+
+        .leaflet-control-attribution {
+            display: none;
+        }
+
+        .center-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            background: white;
+            transition: background 0.2s;
+        }
+
+        .center-item:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Styling for phone numbers */
+        .center-item a {
+            color: black;
+            text-decoration: none;
+            font-weight: normal; /* Phone number should not be bold */
+        }
+
+        .center-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            #main-container {
+                flex-direction: column;
+            }
+
+            #left-panel {
+                width: 100%;
+                height: 250px;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+
+            #right-panel {
+                width: 100%;
+                height: calc(100vh - 250px - 70px);
+            }
+
+            #map {
+                height: 100%;
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+
+            #search {
+                width: 90%;
+            }
+        }
+
+        /* White line at the bottom */
+        #bottom-line {
+            background-color: white;
+
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            border-top: 1px solid #ddd;
+        }
+
+        .center-item b {
+            display: block;
+            margin-bottom: 5px; /* Space between title and address */
+        }
+
+        .center-item p {
+            margin: 5px 0; /* Uniform spacing between elements */
+        }
+        
     </style>
 </head>
 <body>
     <header>
         <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
-        <h1 id="header-title">ԷՖԷՍ ապահովագրական ընկերության հետ համագործակցող բժշկական հաստատություններ</h1>
-        <div class="language-switcher">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Flag_of_Armenia.svg/1200px-Flag_of_Armenia.svg.png" alt="Armenian Flag" onclick="switchLanguage('hy')" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_Kingdom.svg" alt="English Flag" onclick="switchLanguage('en')" />
-        </div>
+        <h1>ԷՖԷՍ ապահովագրական ընկերության հետ համագործակցող բժշկական հաստատություններ</h1>
     </header>
 
     <div id="main-container">
@@ -50,7 +196,6 @@
 
         let markers = [];
         let allCenters = [];
-        let language = 'hy';  // Default language is Armenian
 
         async function loadMedicalCenters() {
             try {
@@ -70,26 +215,26 @@
             popupAnchor: [0, -32]
         });
 
+
+
         function displayMarkers(centers) {
             markers.forEach(marker => map.removeLayer(marker)); // Remove existing markers
             markers = [];
 
             centers.forEach(center => {
-                let name = language === 'hy' ? center.name_hy : center.name_en;  // Show Armenian or English name
-                let address = language === 'hy' ? center.address_hy : center.address_en; // Show Armenian or English address
-
                 let marker = L.marker([center.lat, center.lng], { icon: customIcon }) // Use custom icon
                     .addTo(map)
-                    .bindPopup(`<b>${name}</b><br>${address}`, {
+                    .bindPopup(`<b>${center.name}</b><br>${center.address}`, {
                         maxWidth: 400,  // Set max width of the popup
                         maxHeight: 200  // Set max height of the popup
                     });
-
+                
                 markers.push(marker);
 
                 center.marker = marker;
             });
         }
+
 
         function displayCentersList(centers) {
             const listContainer = document.getElementById('centers-list');
@@ -103,12 +248,9 @@
                     ? `<a href="tel:${center.phone_number.replace(/\s+/g, '')}">${center.phone_number}</a>` 
                     : "No phone available";
 
-                let name = language === 'hy' ? center.name_hy : center.name_en;  // Show Armenian or English name
-                let address = language === 'hy' ? center.address_hy : center.address_en; // Show Armenian or English address
-
                 centerDiv.innerHTML = `
-                    <b>${name}</b>
-                    <p>${address}</p>
+                    <b>${center.name}</b>
+                    <p>${center.address}</p>
                     <p><a href="tel:${center.phone_number.replace(/\s+/g, '')}">${center.phone_number}</a></p>
                 `;
 
@@ -116,6 +258,7 @@
                     map.setView([center.lat, center.lng], 15); // Move map to location
                     center.marker.openPopup(); // Open the popup on the selected marker
                 };
+                
 
                 listContainer.appendChild(centerDiv);
             });
@@ -123,18 +266,9 @@
 
         function filterMarkers() {
             let query = document.getElementById("search").value.toLowerCase();
-            let filteredCenters = allCenters.filter(center => {
-                let name = language === 'hy' ? center.name_hy : center.name_en;
-                return name.toLowerCase().includes(query);
-            });
+            let filteredCenters = allCenters.filter(center => center.name.toLowerCase().includes(query));
             displayMarkers(filteredCenters);
             displayCentersList(filteredCenters); // Update list with filtered results
-        }
-
-        function switchLanguage(lang) {
-            language = lang;
-            loadMedicalCenters();  // Reload content based on selected language
-            document.getElementById("header-title").textContent = (lang === 'hy') ? "ԷՖԷՍ ապահովագրական ընկերության հետ համագործակցող բժշկական հաստատություններ" : "Medical Centers Cooperating with EFES Insurance Company";
         }
 
         loadMedicalCenters();

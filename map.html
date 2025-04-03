@@ -40,6 +40,19 @@
             font-size: 22px;
         }
 
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .language-switcher img {
+            height: 30px;
+            width: 30px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
         #main-container {
             display: flex;
             height: calc(100vh - 70px); /* Full height minus header */
@@ -79,8 +92,6 @@
             margin: 3% auto;
             display: block;
         }
-
-
 
         .leaflet-control-attribution {
             display: none;
@@ -167,7 +178,11 @@
 <body>
     <header>
         <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
-        <h1>ԷՖԷՍ ապահովագրական ընկերության հետ համագործակցող բժշկական հաստատություններ</h1>
+        <h1 id="header-title">ԷՖԷՍ ապահովագրական ընկերության հետ համագործակցող բժշկական հաստատություններ</h1>
+        <div class="language-switcher">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Flag_of_Armenia.svg/1200px-Flag_of_Armenia.svg.png" alt="Armenian Flag" onclick="switchLanguage('hy')" />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_Kingdom.svg" alt="English Flag" onclick="switchLanguage('en')" />
+        </div>
     </header>
 
     <div id="main-container">
@@ -196,6 +211,7 @@
 
         let markers = [];
         let allCenters = [];
+        let language = 'hy';  // Default language is Armenian
 
         async function loadMedicalCenters() {
             try {
@@ -215,8 +231,6 @@
             popupAnchor: [0, -32]
         });
 
-
-
         function displayMarkers(centers) {
             markers.forEach(marker => map.removeLayer(marker)); // Remove existing markers
             markers = [];
@@ -228,13 +242,12 @@
                         maxWidth: 400,  // Set max width of the popup
                         maxHeight: 200  // Set max height of the popup
                     });
-                
+
                 markers.push(marker);
 
                 center.marker = marker;
             });
         }
-
 
         function displayCentersList(centers) {
             const listContainer = document.getElementById('centers-list');
@@ -248,9 +261,12 @@
                     ? `<a href="tel:${center.phone_number.replace(/\s+/g, '')}">${center.phone_number}</a>` 
                     : "No phone available";
 
+                let name = language === 'hy' ? center.name : center.name_en;  // Use English name if available
+                let address = language === 'hy' ? center.address : center.address_en;
+
                 centerDiv.innerHTML = `
-                    <b>${center.name}</b>
-                    <p>${center.address}</p>
+                    <b>${name}</b>
+                    <p>${address}</p>
                     <p><a href="tel:${center.phone_number.replace(/\s+/g, '')}">${center.phone_number}</a></p>
                 `;
 
@@ -258,7 +274,6 @@
                     map.setView([center.lat, center.lng], 15); // Move map to location
                     center.marker.openPopup(); // Open the popup on the selected marker
                 };
-                
 
                 listContainer.appendChild(centerDiv);
             });
@@ -269,6 +284,12 @@
             let filteredCenters = allCenters.filter(center => center.name.toLowerCase().includes(query));
             displayMarkers(filteredCenters);
             displayCentersList(filteredCenters); // Update list with filtered results
+        }
+
+        function switchLanguage(lang) {
+            language = lang;
+            loadMedicalCenters();  // Reload content based on selected language
+            document.getElementById("header-title").textContent = (lang === 'hy') ? "ԷՖԷՍ ապահովագրական ընկերության հետ համագործակցող բժշկական հաստատություններ" : "Medical Centers Cooperating with EFES Insurance Company";
         }
 
         loadMedicalCenters();

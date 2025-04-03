@@ -225,8 +225,8 @@
                 let marker = L.marker([center.lat, center.lng], { icon: customIcon }) // Use custom icon
                     .addTo(map)
                     .bindPopup(`<b>${center.name}</b><br>${center.address}`, {
-                        maxWidth: 400,  // Set max width of the popup
-                        maxHeight: 200  // Set max height of the popup
+                        maxWidth: 800,  // Set max width of the popup
+                        maxHeight: 500  // Set max height of the popup
                     });
                 
                 markers.push(marker);

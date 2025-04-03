@@ -256,7 +256,7 @@
 
                 
                 centerDiv.onclick = () => {
-                    map.setView(center.marker.getLatLng(), 15, { animate: true }); // Move and center map immediately
+                    map.panTo([center.lat, center.lng]); // Instantly move map to location
                     center.marker.openPopup(); // Open the popup on the selected marker
                 };
 

@@ -216,24 +216,35 @@
         });
 
 
+        var efesIcon = L.icon({
+            iconUrl: 'https://static.wixstatic.com/media/1d13cb_e4e62ab7709c463b8b1d31d016cd096c~mv2.png/v1/fill/w_60,h_60,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/main%20umdrella%20sign.png', // Change to your actual Efes icon URL
+            iconSize: [45, 45],
+            iconAnchor: [16, 32], 
+            popupAnchor: [0, -32]
+        });
+
+
 
         function displayMarkers(centers) {
             markers.forEach(marker => map.removeLayer(marker)); // Remove existing markers
             markers = [];
 
             centers.forEach(center => {
-                let marker = L.marker([center.lat, center.lng], { icon: customIcon }) // Use custom icon
+                // Choose icon based on the center name
+                let iconToUse = center.name === "էֆես ապահովագրական ընկերություն" ? efesIcon : customIcon;
+
+                let marker = L.marker([center.lat, center.lng], { icon: iconToUse }) 
                     .addTo(map)
                     .bindPopup(`<b>${center.name}</b><br>${center.address}`, {
-                        maxWidth: 400,  // Set max width of the popup
-                        maxHeight: 200  // Set max height of the popup
+                        maxWidth: 400,
+                        maxHeight: 200
                     });
-                
-                markers.push(marker);
 
+                markers.push(marker);
                 center.marker = marker;
             });
         }
+
 
 
         function displayCentersList(centers) {

@@ -224,6 +224,13 @@
         });
 
 
+        var vardanancIcon = L.icon({
+            iconUrl: 'https://cdn-ru.bitrix24.ru/b15506840/resize_cache/333/f72cdc32ecc10461003d548dee4468d0/crm/button/8cb6cc9bd5f03a0f6a4e3fcde031bda5.png', // Replace with Vardananc icon URL
+            iconSize: [45, 45],
+            iconAnchor: [16, 32], 
+            popupAnchor: [0, -32]
+        });
+
 
         function displayMarkers(centers) {
             markers.forEach(marker => map.removeLayer(marker)); // Remove existing markers
@@ -231,7 +238,14 @@
 
             centers.forEach(center => {
                 // Choose icon based on the center name
-                let iconToUse = center.name === "էֆես ապահովագրական ընկերություն" ? efesIcon : customIcon;
+                let iconToUse;
+                if (center.name === "էֆես ապահովագրական ընկերություն") {
+                    iconToUse = efesIcon;
+                } else if (center.name === "Վարդանանց նորարական բժշկության կենտրոն") {
+                    iconToUse = vardanancIcon;
+                } else {
+                    iconToUse = customIcon;
+                }
 
                 let marker = L.marker([center.lat, center.lng], { icon: iconToUse }) 
                     .addTo(map)
@@ -244,6 +258,7 @@
                 center.marker = marker;
             });
         }
+
 
 
 

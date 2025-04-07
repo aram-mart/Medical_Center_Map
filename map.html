@@ -309,9 +309,15 @@
         div.className = 'center-item';
 
         div.innerHTML = `
-          <b>${center.name}</b>
-          <p>${center.categori}</p>${center.url ? `<p><a href="${center.url}" target="_blank" class="view-website-btn">
-            <img src="url.png" alt="View Website" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">Դիտել կայքը</a></p>` : ''}
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <b>${center.name}</b>
+              <p>${center.categori}</p>
+            </div>
+            ${center.url ? `<a href="${center.url}" target="_blank" class="view-website-btn">
+              <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/url.png" alt="View Website" style="width: 30px; height: 30px;">
+            </a>` : ''}
+          </div>
           <p>${center.address}</p>
           <p><a href="tel:${center.phone_number?.replace(/\s+/g, '')}">${center.phone_number || "No phone available"}</a></p>
         `;

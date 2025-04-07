@@ -72,7 +72,7 @@
       border-radius: 5px;
     }
 
-    #category-filter {
+    #categori-filter {
       width: 80%;
       max-width: 400px;
       padding: 8px;
@@ -142,7 +142,7 @@
       }
 
       #search,
-      #category-filter {
+      #categori-filter {
         width: 90%;
       }
     }
@@ -177,8 +177,8 @@
       <div id="search-container">
         <input type="text" id="search" placeholder="🔍 Փնտրել Բ/Կ-ի անունով" oninput="filterMarkers()">
 
-        <label for="category-filter" style="display:block; margin-top: 10px;">Ընտրել կատեգորիա</label>
-        <select id="category-filter" onchange="filterMarkers()">
+        <label for="categori-filter" style="display:block; margin-top: 10px;">Ընտրել կատեգորիա</label>
+        <select id="categori-filter" onchange="filterMarkers()">
           <option value="">Բոլորը</option>
           <option value="optics">Optics</option>
           <option value="dental clinic">Dental Clinic</option>
@@ -281,12 +281,12 @@
 
     function filterMarkers() {
       const searchQuery = document.getElementById("search").value.toLowerCase();
-      const selectedCategory = document.getElementById("category-filter").value;
+      const selectedcategori = document.getElementById("categori-filter").value;
 
       const filtered = allCenters.filter(center => {
         const matchesName = center.name.toLowerCase().includes(searchQuery);
-        const matchesCategory = !selectedCategory || (center.category && center.category === selectedCategory);
-        return matchesName && matchesCategory;
+        const matchescategori = !selectedcategori || (center.categori && center.categori === selectedcategori);
+        return matchesName && matchescategori;
       });
 
       displayMarkers(filtered);

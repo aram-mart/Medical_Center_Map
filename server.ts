@@ -20,7 +20,7 @@ serve(async (req) => {
   if (url.pathname === "/api/centers") {
     const { data, error } = await supabase
       .from("medical_centers")
-      .select("id, name, address, lat, lng, phone_number, category");
+      .select("id, name, address, lat, lng, phone_number, categori");
 
     if (error) {
       return new Response(JSON.stringify({ error: error.message }), {

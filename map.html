@@ -220,9 +220,14 @@
             <option value="Ամբուլատոր կենտրոն">Ամբուլատոր կենտրոն</option>
             <option value="Բուժ․ Կենտրոն">Բուժ․ Կենտրոն</option>
           </select>
-          <button id="clear-filters-btn" onclick="clearFilters()">Բացել զտումները</button>
+      
+          <!-- Button with icon -->
+          <button id="clear-filters-btn" onclick="clearFilters()" style="background: none; border: none; cursor: pointer;">
+            <img src="icon/filter.png" alt="Clear Filters" style="width: 20px; height: 20px;"/>
+          </button>
         </div>
       </div>
+      
       <div id="centers-list"></div>
     </div>
 

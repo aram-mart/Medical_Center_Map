@@ -72,14 +72,33 @@
       border-radius: 5px;
     }
 
+    #categori-filter-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
     #categori-filter {
       width: 80%;
-      max-width: 400px;
       padding: 8px;
       font-size: 16px;
       border: 1px solid #ccc;
       border-radius: 5px;
-      margin-top: 10px;
+    }
+
+    #clear-filters-btn {
+      padding: 5px 10px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #clear-filters-btn:hover {
+      background-color: #e53935;
     }
 
     #map {
@@ -192,14 +211,17 @@
     <div id="left-panel">
       <div id="search-container">
         <input type="text" id="search" placeholder="🔍 Փնտրել Բ/Կ-ի անունով" oninput="filterMarkers()">
-
-        <label for="categori-filter" style="display:block; margin-top: 10px;">Ընտրել կատեգորիա</label>
-        <select id="categori-filter" onchange="filterMarkers()">
-          <option value="">Բոլորը</option>
-          <option value="Ապահովագրություն">Ապահովագրություն</option>
-          <option value="Ամբուլատոր կենտրոն">Ամբուլատոր կենտրոն</option>
-          <option value="Բուժ․ Կենտրոն">Բուժ․ Կենտրոն</option>
-        </select>
+      
+        <div id="categori-filter-container">
+          <label for="categori-filter">Ընտրել կատեգորիա</label>
+          <select id="categori-filter" onchange="filterMarkers()">
+            <option value="">Բոլորը</option>
+            <option value="Ապահովագրություն">Ապահովագրություն</option>
+            <option value="Ամբուլատոր կենտրոն">Ամբուլատոր կենտրոն</option>
+            <option value="Բուժ․ Կենտրոն">Բուժ․ Կենտրոն</option>
+          </select>
+          <button id="clear-filters-btn" onclick="clearFilters()">Բացել զտումները</button>
+        </div>
       </div>
       <div id="centers-list"></div>
     </div>
@@ -309,6 +331,14 @@
 
       displayMarkers(filtered);
       displayCentersList(filtered);
+    }
+
+    function clearFilters() {
+      // Reset both the search input and category filter
+      document.getElementById("search").value = '';
+      document.getElementById("categori-filter").value = '';
+
+      filterMarkers();
     }
 
     loadMedicalCenters();

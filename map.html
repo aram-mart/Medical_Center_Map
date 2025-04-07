@@ -310,7 +310,8 @@
 
         div.innerHTML = `
           <b>${center.name}</b>
-          ${center.url ? `<p><a href="${center.url}" target="_blank" class="view-website-btn">Դիտել կայքը</a></p>` : ''}
+          <p>${center.categori}</p>${center.url ? `<p><a href="${center.url}" target="_blank" class="view-website-btn">
+            <img src="url.png" alt="View Website" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">Դիտել կայքը</a></p>` : ''}
           <p>${center.address}</p>
           <p><a href="tel:${center.phone_number?.replace(/\s+/g, '')}">${center.phone_number || "No phone available"}</a></p>
         `;

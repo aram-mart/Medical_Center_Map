@@ -41,32 +41,33 @@
 
     #main-container {
       display: flex;
-      height: calc(100vh - 70px);
+      height: calc(100vh - 101px); /* Adjusted for header + bottom-line */
       position: relative;
     }
 
     #left-panel {
       width: 25%;
-      padding: 10px;
+      padding: 0;
       overflow-y: auto;
       border-right: 1px solid #ddd;
       height: 100%;
       background-color: #f9f9f9;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      opacity: 1;
+      transition: transform 0.3s ease;
+      position: relative;
+      z-index: 10;
     }
 
     #left-panel.hidden {
       transform: translateX(-100%);
-      position: absolute;
-      z-index: 999;
-      opacity: 0;
     }
 
     #right-panel {
       width: 75%;
       height: 100%;
       transition: width 0.3s ease;
+      padding: 0;
+      margin: 0;
+      position: relative;
     }
 
     #right-panel.expanded {
@@ -75,8 +76,8 @@
 
     #toggle-panel-btn {
       position: absolute;
-      left: 10px;
-      top: 110px; /* Moved below header */
+      left: 25%;
+      top: 10px;
       z-index: 1000;
       background-color: white;
       border: 1px solid #ccc;
@@ -89,6 +90,12 @@
       align-items: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    #toggle-panel-btn.collapsed {
+      left: 10px;
+      transform: translateX(0);
     }
 
     #toggle-panel-btn img {
@@ -104,38 +111,30 @@
 
     #search-container {
       text-align: center;
-      margin-bottom: 10px;
+      margin: 15px 0;
+      padding: 0 10px;
     }
 
     #search,
     #categori-filter,
     #city-filter {
-      width: 80%;
-      max-width: 500px;
+      width: 100%;
       padding: 8px;
       font-size: 16px;
       border: 1px solid #ccc;
       border-radius: 5px;
     }
 
-    #categori-filter-container,
-    #city-filter-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 10px;
-    }
-
     #filter-row {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       margin-top: 10px;
       gap: 10px;
     }
 
     .filter-select {
-      width: 180px;
+      flex-grow: 1;
       padding: 8px;
       font-size: 16px;
       border: 1px solid #ccc;
@@ -162,7 +161,6 @@
       filter: brightness(0.8);
     }
 
-    /* Screen-reader-only labels */
     .visually-hidden {
       position: absolute;
       width: 1px;
@@ -176,14 +174,18 @@
     }
 
     #map {
-      width: 95%;
-      height: 90%;
-      margin: 3% auto;
-      display: block;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
     }
 
     .leaflet-control-attribution {
       display: none;
+    }
+
+    #centers-list {
+      padding: 0 10px;
     }
 
     .center-item {
@@ -226,79 +228,10 @@
       background-color: #0056b3;
     }
 
-    @media (max-width: 768px) {
-      #main-container {
-        flex-direction: column;
-        height: auto;
-      }
-
-      #left-panel {
-        width: 80%;
-        height: 100%;
-        max-height: calc(100vh - 70px);
-        border-right: 1px solid #ddd;
-        border-bottom: none;
-        overflow-y: auto;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 999;
-        background-color: #f9f9f9;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-      }
-
-      #left-panel.hidden {
-        transform: translateX(-100%);
-      }
-      
-      #left-panel.visible {
-        transform: translateX(0);
-        opacity: 1;
-      }
-
-      #right-panel {
-        width: 100%;
-        flex-grow: 1;
-        height: calc(100vh - 70px);
-      }
-
-      #right-panel.expanded {
-        margin-top: 0;
-      }
-
-      #toggle-panel-btn {
-        top: 80px;
-        left: 10px;
-        position: fixed;
-      }
-
-      /* Shift map slightly down to accommodate toggle button */
-      #map {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-      }
-
-      h2 {
-        font-size: 18px;
-        margin: 10px;
-      }
-
-      #search,
-      #categori-filter,
-      #city-filter {
-        width: 95%;
-      }
-
-      header img {
-        margin-right: 10px;
-      }
-    }
-
     #bottom-line {
       background-color: white;
       width: 100%;
+      height: 1px;
       position: fixed;
       bottom: 0;
       left: 0;
@@ -318,17 +251,69 @@
       font-size: 14px;
     }
 
-    @media (max-width: 768px) {
-      .text-font_size {
-        font-size: 12px;
-      }
-    }
-
     .text-font_size_title {
       font-size: 16px;
     }
 
     @media (max-width: 768px) {
+      #main-container {
+        flex-direction: column;
+        height: calc(100vh - 101px);
+      }
+
+      #left-panel {
+        width: 80%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        transform: translateX(-100%);
+      }
+
+      #left-panel.hidden {
+        transform: translateX(-100%);
+      }
+      
+      #left-panel:not(.hidden) {
+        transform: translateX(0);
+      }
+
+      #right-panel {
+        width: 100%;
+        height: 100%;
+      }
+
+      #toggle-panel-btn {
+        position: fixed;
+        top: 80px;
+        left: 10px;
+        z-index: 1001;
+      }
+
+      #toggle-panel-btn.collapsed {
+        left: 10px;
+      }
+
+      h2 {
+        font-size: 18px;
+        margin: 10px;
+      }
+
+      #search,
+      #categori-filter,
+      #city-filter {
+        width: 100%;
+      }
+
+      header img {
+        margin-right: 10px;
+      }
+      
+      .text-font_size {
+        font-size: 12px;
+      }
+      
       .text-font_size_title {
         font-size: 14px;
       }
@@ -453,38 +438,25 @@
     function togglePanel() {
       const leftPanel = document.getElementById('left-panel');
       const rightPanel = document.getElementById('right-panel');
+      const toggleBtn = document.getElementById('toggle-panel-btn');
       const toggleText = document.getElementById('toggle-text');
       const toggleIcon = document.getElementById('toggle-icon');
       
-      if (leftPanel.classList.contains('hidden')) {
-        // Opening the panel
-        leftPanel.classList.remove('hidden');
-        setTimeout(() => {
-          leftPanel.classList.add('visible');
-        }, 10); // Small delay to ensure CSS transition works
-      } else {
-        // Closing the panel
-        leftPanel.classList.remove('visible');
-        setTimeout(() => {
-          leftPanel.classList.add('hidden');
-        }, 300); // Match the transition duration
-      }
-      
+      leftPanel.classList.toggle('hidden');
       rightPanel.classList.toggle('expanded');
+      toggleBtn.classList.toggle('collapsed');
       
       isPanelVisible = !leftPanel.classList.contains('hidden');
       
       if (isPanelVisible) {
         toggleText.textContent = 'Փակել ցանկը';
         toggleIcon.src = 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png';
-        toggleIcon.style.transform = 'rotate(90deg)';
       } else {
         toggleText.textContent = 'Բացել ցանկը';
         toggleIcon.src = 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/menu.png';
-        toggleIcon.style.transform = 'rotate(0deg)';
       }
       
-      // Update map size after panel toggle to prevent display issues
+      // Update map size after panel toggle
       setTimeout(() => {
         map.invalidateSize();
       }, 300);
@@ -594,7 +566,7 @@
         div.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <b class="text-font_size_title ">${center.name}</b>
+                <b class="text-font_size_title">${center.name}</b>
                 <p class="text-font_size">${center.categori}</p>
               </div>
               ${center.url ? `<a href="${center.url}" target="_blank" class="view-website-btn" style="text-decoration: none; background: none; border: none; color: inherit;">
@@ -653,23 +625,23 @@
     function initializeLayout() {
       const leftPanel = document.getElementById('left-panel');
       const rightPanel = document.getElementById('right-panel');
+      const toggleBtn = document.getElementById('toggle-panel-btn');
       const isMobile = window.innerWidth <= 768;
       
       if (isMobile) {
         leftPanel.classList.add('hidden');
-        leftPanel.classList.remove('visible');
         rightPanel.classList.add('expanded');
+        toggleBtn.classList.add('collapsed');
         document.getElementById('toggle-text').textContent = 'Բացել ցանկը';
         document.getElementById('toggle-icon').src = 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/menu.png';
-        document.getElementById('toggle-icon').style.transform = 'rotate(0deg)';
         isPanelVisible = false;
       } else {
         // For desktop, ensure panel is visible by default
         leftPanel.classList.remove('hidden');
         rightPanel.classList.remove('expanded');
+        toggleBtn.classList.remove('collapsed');
         document.getElementById('toggle-text').textContent = 'Փակել ցանկը';
         document.getElementById('toggle-icon').src = 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png';
-        document.getElementById('toggle-icon').style.transform = 'rotate(90deg)';
         isPanelVisible = true;
       }
       

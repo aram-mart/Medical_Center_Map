@@ -52,19 +52,21 @@
       border-right: 1px solid #ddd;
       height: 100%;
       background-color: #f9f9f9;
-      transition: transform 0.3s ease-in-out;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      opacity: 1;
     }
 
     #left-panel.hidden {
       transform: translateX(-100%);
       position: absolute;
       z-index: 999;
+      opacity: 0;
     }
 
     #right-panel {
       width: 75%;
       height: 100%;
-      transition: width 0.3s ease-in-out;
+      transition: width 0.3s ease;
     }
 
     #right-panel.expanded {
@@ -86,12 +88,18 @@
       display: flex;
       align-items: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
     }
 
     #toggle-panel-btn img {
       width: 20px;
       height: 20px;
       margin-right: 5px;
+      transition: transform 0.3s ease;
+    }
+
+    #toggle-panel-btn:hover {
+      background-color: #f1f1f1;
     }
 
     #search-container {
@@ -234,10 +242,16 @@
         top: 0;
         left: 0;
         z-index: 999;
+        transform: translateY(-100%);
       }
 
       #left-panel.hidden {
         transform: translateY(-100%);
+      }
+      
+      #left-panel.visible {
+        transform: translateY(0);
+        opacity: 1;
       }
 
       #right-panel {
@@ -251,10 +265,12 @@
       }
 
       #toggle-panel-btn {
-        top: auto;
-        bottom: 20px;
+        top: 10px;
+        left: 10px;
+        position: fixed;
       }
 
+      /* Shift map slightly down to accommodate toggle button */
       #map {
         width: 100%;
         height: 100%;
@@ -437,7 +453,20 @@
       const toggleText = document.getElementById('toggle-text');
       const toggleIcon = document.getElementById('toggle-icon');
       
-      leftPanel.classList.toggle('hidden');
+      if (leftPanel.classList.contains('hidden')) {
+        // Opening the panel
+        leftPanel.classList.remove('hidden');
+        setTimeout(() => {
+          leftPanel.classList.add('visible');
+        }, 10); // Small delay to ensure CSS transition works
+      } else {
+        // Closing the panel
+        leftPanel.classList.remove('visible');
+        setTimeout(() => {
+          leftPanel.classList.add('hidden');
+        }, 300); // Match the transition duration
+      }
+      
       rightPanel.classList.toggle('expanded');
       
       isPanelVisible = !leftPanel.classList.contains('hidden');
@@ -445,9 +474,11 @@
       if (isPanelVisible) {
         toggleText.textContent = 'Փակել ցանկը';
         toggleIcon.src = 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png';
+        toggleIcon.style.transform = 'rotate(90deg)';
       } else {
         toggleText.textContent = 'Բացել ցանկը';
         toggleIcon.src = 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/menu.png';
+        toggleIcon.style.transform = 'rotate(0deg)';
       }
       
       // Update map size after panel toggle to prevent display issues
@@ -541,6 +572,12 @@
         markers.push(marker);
         center.marker = marker;
       });
+
+      // If we have centers, fit the map to show all markers
+      if (centers.length > 0) {
+        const group = new L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.1));
+      }
     }
 
     function displayCentersList(centers) {
@@ -609,6 +646,20 @@
       map.invalidateSize();
     });
 
+    // Detect mobile devices and initialize the panel accordingly
+    function initializeLayout() {
+      const leftPanel = document.getElementById('left-panel');
+      const isMobile = window.innerWidth <= 768;
+      
+      if (isMobile) {
+        leftPanel.classList.add('hidden');
+        leftPanel.classList.remove('visible');
+      }
+    }
+
+    window.addEventListener('load', initializeLayout);
+    window.addEventListener('resize', initializeLayout);
+    
     loadMedicalCenters();
   </script>
 </body>

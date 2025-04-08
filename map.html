@@ -6,7 +6,7 @@
   <title>Medical Centers Map</title>
 
   <!-- Google Fonts: Montserrat -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
@@ -17,14 +17,16 @@
       height: 100%;
       box-sizing: border-box;
       overflow: hidden;
+      background-color: #f9fafb;
     }
 
     header {
       display: flex;
       align-items: center;
-      padding: 10px;
-      background-color: #f8f8f8;
-      border-bottom: 1px solid #ddd;
+      padding: 10px 20px;
+      background-color: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
     header img {
@@ -37,30 +39,83 @@
       text-align: center;
       flex-grow: 1;
       font-size: 22px;
+      color: #1f2937;
     }
 
     #main-container {
       display: flex;
       height: calc(100vh - 70px);
+      position: relative;
     }
 
     #left-panel {
       width: 25%;
-      padding: 10px;
+      padding: 15px;
       overflow-y: auto;
-      border-right: 1px solid #ddd;
+      border-right: 1px solid #e5e7eb;
       height: 100%;
-      background-color: #f9f9f9;
+      background-color: #ffffff;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      opacity: 1;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+    }
+
+    #left-panel.hidden {
+      transform: translateX(-100%);
+      position: absolute;
+      z-index: 999;
+      opacity: 0;
     }
 
     #right-panel {
       width: 75%;
       height: 100%;
+      transition: width 0.3s ease;
+      background-color: #f9fafb;
+      position: relative;
+    }
+
+    #right-panel.expanded {
+      width: 100%;
+    }
+
+    #toggle-panel-btn {
+      position: absolute;
+      left: 10px;
+      top: 110px;
+      z-index: 1000;
+      background-color: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      color: #1f2937;
+    }
+
+    #toggle-panel-btn img {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    #toggle-panel-btn:hover {
+      background-color: #f3f4f6;
+      transform: translateY(-2px);
     }
 
     #search-container {
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
+      background-color: #f3f4f6;
+      padding: 15px;
+      border-radius: 10px;
     }
 
     #search,
@@ -68,10 +123,21 @@
     #city-filter {
       width: 80%;
       max-width: 500px;
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      padding: 10px 12px;
+      font-size: 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background-color: white;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+    }
+
+    #search:focus,
+    #categori-filter:focus,
+    #city-filter:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     }
 
     #categori-filter-container,
@@ -79,23 +145,26 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
     #filter-row {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 10px;
+      margin-top: 12px;
       gap: 10px;
     }
 
     .filter-select {
       width: 180px;
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      padding: 10px;
+      font-size: 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background-color: white;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
 
     #clear-filters-btn {
@@ -107,17 +176,19 @@
       align-items: center;
       justify-content: center;
       height: 100%;
+      transition: transform 0.2s ease;
     }
 
     #clear-filters-btn img {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
     }
 
-    #clear-filters-btn:hover img {
-      filter: brightness(0.8);
+    #clear-filters-btn:hover {
+      transform: rotate(15deg);
     }
 
+    /* Screen-reader-only labels */
     .visually-hidden {
       position: absolute;
       width: 1px;
@@ -135,72 +206,111 @@
       height: 90%;
       margin: 3% auto;
       display: block;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     .leaflet-control-attribution {
       display: none;
     }
 
+    #centers-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding: 5px;
+    }
+
     .center-item {
-      margin-bottom: 10px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      margin-bottom: 0;
+      padding: 15px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
       cursor: pointer;
       background: white;
-      transition: background 0.2s, border-color 0.2s;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
     .center-item:hover {
-      background-color: #f1f1f1;
-      border-color: #007bff;
+      background-color: #f8fafc;
+      border-color: #3b82f6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
     .center-item a {
-      color: black;
+      color: #1f2937;
       text-decoration: none;
+      transition: color 0.2s ease;
     }
 
     .center-item a:hover {
+      color: #3b82f6;
       text-decoration: underline;
     }
 
-    .view-website-btn {
+    .center-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .center-info {
+      flex-grow: 1;
+    }
+
+    .center-category {
       display: inline-block;
-      padding: 6px 12px;
-      background-color: #007bff;
-      color: white;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 8px;
+      background-color: #e5e7eb;
+      color: #4b5563;
       border-radius: 4px;
-      text-align: center;
-      font-size: 14px;
-      text-decoration: none;
-      margin-top: 5px;
+      margin-top: 4px;
+    }
+
+    .center-details {
+      margin-top: 8px;
+    }
+
+    .center-address {
+      display: flex;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .center-phone {
+      display: flex;
+      align-items: center;
+    }
+
+    .detail-icon {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      opacity: 0.7;
+    }
+
+    .view-website-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s ease;
     }
 
     .view-website-btn:hover {
-      background-color: #0056b3;
+      transform: scale(1.1);
     }
 
-    #bottom-line {
-      background-color: white;
-      width: 100%;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      border-top: 1px solid #ddd;
-    }
-
-    .center-item b {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .center-item p {
-      margin: 5px 0;
-    }
-
-    .text-font_size {
-      font-size: 14px;
+    .view-website-btn img {
+      width: 35px;
+      height: 35px;
     }
 
     @media (max-width: 768px) {
@@ -210,23 +320,47 @@
       }
 
       #left-panel {
-        width: 100%;
-        max-height: 300px;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
+        width: 80%;
+        height: 100%;
+        max-height: calc(100vh - 70px);
+        border-right: 1px solid #ddd;
+        border-bottom: none;
         overflow-y: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        background-color: #ffffff;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+
+      #left-panel.hidden {
+        transform: translateX(-100%);
+      }
+      
+      #left-panel.visible {
+        transform: translateX(0);
+        opacity: 1;
       }
 
       #right-panel {
         width: 100%;
         flex-grow: 1;
-        height: calc(100vh - 70px - 300px);
+        height: calc(100vh - 70px);
+      }
+
+      #toggle-panel-btn {
+        top: 80px;
+        left: 10px;
+        position: fixed;
       }
 
       #map {
         width: 100%;
         height: 100%;
         margin: 0;
+        border-radius: 0;
       }
 
       h2 {
@@ -240,39 +374,57 @@
         width: 95%;
       }
 
+      header img {
+        margin-right: 10px;
+      }
+      
       #centers-list {
-        display: none; /* Hide list by default on small screens */
+        grid-template-columns: 1fr;
+      }
+    }
+
+    #bottom-line {
+      background-color: white;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      border-top: 1px solid #e5e7eb;
+      height: 5px;
+    }
+
+    .center-item b {
+      display: block;
+      margin-bottom: 5px;
+      color: #1f2937;
+      font-weight: 600;
+    }
+
+    .center-item p {
+      margin: 5px 0;
+      color: #4b5563;
+    }
+
+    .text-font_size {
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .text-font_size {
+        font-size: 13px;
       }
     }
 
     .text-font_size_title {
       font-size: 16px;
+      font-weight: 600;
     }
 
     @media (max-width: 768px) {
-      .text-font_size {
-        font-size: 10px;
-      }
       .text-font_size_title {
-        font-size: 13px;
+        font-size: 15px;
       }
     }
-
-    #toggle-list-btn {
-      margin-bottom: 10px;
-      padding: 8px 12px;
-      font-size: 14px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    #toggle-list-btn:hover {
-      background-color: #0056b3;
-    }
-
   </style>
 </head>
 <body>
@@ -282,10 +434,13 @@
   </header>
 
   <div id="main-container">
+    <button id="toggle-panel-btn" onclick="togglePanel()">
+      <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png" alt="Toggle" id="toggle-icon">
+      <span id="toggle-text">Փակել ցանկը</span>
+    </button>
+    
     <div id="left-panel">
       <div id="search-container">
-        <button id="toggle-list-btn" onclick="toggleCentersList()">Բացել ցուցակը</button>
-
         <input type="text" id="search" placeholder="🔍 Փնտրել Բ/Կ-ի անունով" oninput="filterMarkers()" aria-label="Փնտրել Բ/Կ-ի անունով">
       
         <div id="filter-row">
@@ -302,7 +457,7 @@
             <option value="Պոլիկլինիկա">Պոլիկլինիկա</option>
             <option value="Օպտիկա">Օպտիկա</option>
           </select>
-
+    
           <label for="city-filter" class="visually-hidden">Քաղաք</label>
           <select id="city-filter" class="filter-select" onchange="filterMarkers()">
             <option value="">Ընտրել քաղաքը</option>
@@ -357,13 +512,12 @@
             <option value="Վահան">Վահան</option>
           </select>
           
-
           <button id="clear-filters-btn" onclick="clearFilters()" aria-label="Մաքրել ֆիլտրերը">
             <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/filter.png" alt="Clear Filters" />
           </button>
         </div>
       </div>
-
+      
       <div id="centers-list"></div>
     </div>
 
@@ -377,6 +531,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     var map = L.map('map').setView([40.1792, 44.4991], 13);
+    var isPanelVisible = true; // Default to visible
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -386,6 +541,47 @@
     let markers = [];
     let allCenters = [];
 
+    // Toggle panel function
+    function togglePanel() {
+      const leftPanel = document.getElementById('left-panel');
+      const rightPanel = document.getElementById('right-panel');
+      const toggleText = document.getElementById('toggle-text');
+      const toggleIcon = document.getElementById('toggle-icon');
+      
+      if (leftPanel.classList.contains('hidden')) {
+        // Opening the panel
+        leftPanel.classList.remove('hidden');
+        setTimeout(() => {
+          leftPanel.classList.add('visible');
+        }, 10); // Small delay to ensure CSS transition works
+      } else {
+        // Closing the panel
+        leftPanel.classList.remove('visible');
+        setTimeout(() => {
+          leftPanel.classList.add('hidden');
+        }, 300); // Match the transition duration
+      }
+      
+      rightPanel.classList.toggle('expanded');
+      
+      isPanelVisible = !leftPanel.classList.contains('hidden');
+      
+      if (isPanelVisible) {
+        toggleText.textContent = 'Փակել ցանկը';
+        toggleIcon.src = 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png';
+        toggleIcon.style.transform = 'rotate(90deg)';
+      } else {
+        toggleText.textContent = 'Բացել ցանկը';
+        toggleIcon.src = 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/menu.png';
+        toggleIcon.style.transform = 'rotate(0deg)';
+      }
+      
+      // Update map size after panel toggle to prevent display issues
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 300);
+    }
+
     async function loadMedicalCenters() {
       try {
         const response = await fetch("/api/centers");
@@ -394,7 +590,44 @@
         displayCentersList(allCenters);
       } catch (error) {
         console.error("Error loading medical centers:", error);
+        // For demo purposes, use mock data if API fails
+        useMockData();
       }
+    }
+
+    function useMockData() {
+      // Sample mock data for demonstration
+      allCenters = [
+        {
+          name: "էֆես ապահովագրական ընկերություն",
+          categori: "Ապահովագրություն",
+          address: "Երևան, Նալբանդյան 7/1",
+          phone_number: "+374 10 547773",
+          url: "https://efes.am",
+          lat: 40.1792,
+          lng: 44.4991
+        },
+        {
+          name: "Նորք-Մարաշ ԲԿ",
+          categori: "Բուժ․ Կենտրոն",
+          address: "Երևան, Արմենակյան 13",
+          phone_number: "+374 10 654365",
+          lat: 40.1743,
+          lng: 44.5120
+        },
+        {
+          name: "Վարդանանց նորարական բժշկության կենտրոն",
+          categori: "Բուժ․ Կենտրոն",
+          address: "Երևան, Վարդանանց 18/1",
+          phone_number: "+374 10 582333",
+          url: "https://vardanants.am",
+          lat: 40.1867,
+          lng: 44.5068
+        }
+      ];
+      
+      displayMarkers(allCenters);
+      displayCentersList(allCenters);
     }
 
     const customIcon = L.icon({
@@ -429,11 +662,27 @@
 
         let marker = L.marker([center.lat, center.lng], { icon: iconToUse })
           .addTo(map)
-          .bindPopup(`<b>${center.name}</b><br>${center.address}`);
+          .bindPopup(`
+            <div style="text-align: center;">
+              <b style="font-size: 16px; display: block; margin-bottom: 5px;">${center.name}</b>
+              <span style="font-size: 13px; color: #666; display: block; margin-bottom: 8px;">${center.categori}</span>
+              <span style="font-size: 14px; display: block;">${center.address}</span>
+              <span style="font-size: 14px; display: block; margin-top: 5px;">
+                <a href="tel:${center.phone_number?.replace(/\s+/g, '')}" style="color: #007bff;">${center.phone_number || "No phone available"}</a>
+              </span>
+              ${center.url ? `<a href="${center.url}" target="_blank" style="display: inline-block; margin-top: 8px; color: #007bff; font-size: 14px;">Կայք</a>` : ''}
+            </div>
+          `);
 
         markers.push(marker);
         center.marker = marker;
       });
+
+      // If we have centers, fit the map to show all markers
+      if (centers.length > 0) {
+        const group = new L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.1));
+      }
     }
 
     function displayCentersList(centers) {
@@ -445,24 +694,37 @@
         div.className = 'center-item';
 
         div.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
+          <div class="center-header">
+            <div class="center-info">
               <b class="text-font_size_title">${center.name}</b>
-              <p class="text-font_size">${center.categori}</p>
+              <div class="center-category">${center.categori}</div>
             </div>
-            ${center.url ? `<a href="${center.url}" target="_blank" class="view-website-btn" style="text-decoration: none; background: none; border: none; color: inherit;">
-              <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/web.png" alt="View Website" style="width: 35px; height: 35px;">
-            </a>` : ''}
+            ${center.url ? `
+              <a href="${center.url}" target="_blank" class="view-website-btn" aria-label="Visit website">
+                <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/web.png" alt="View Website">
+              </a>
+            ` : ''}
           </div>
-          <div>
-            <p class="text-font_size">${center.address}</p>
-            <p class="text-font_size"><a href="tel:${center.phone_number?.replace(/\s+/g, '')}">${center.phone_number || "No phone available"}</a></p>
+          <div class="center-details">
+            <div class="center-address">
+              <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/location.png" alt="Address" class="detail-icon">
+              <p class="text-font_size">${center.address}</p>
+            </div>
+            <div class="center-phone">
+              <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/phone.png" alt="Phone" class="detail-icon">
+              <p class="text-font_size"><a href="tel:${center.phone_number?.replace(/\s+/g, '')}">${center.phone_number || "No phone available"}</a></p>
+            </div>
           </div>
         `;
 
         div.onclick = () => {
           map.setView([center.lat, center.lng], 15);
           center.marker.openPopup();
+          
+          // On mobile, close the panel after clicking an item
+          if (window.innerWidth <= 768) {
+            togglePanel();
+          }
         };
 
         listContainer.appendChild(div);
@@ -492,20 +754,13 @@
       filterMarkers();
     }
 
-    function toggleCentersList() {
-      const list = document.getElementById("centers-list");
-      const toggleBtn = document.getElementById("toggle-list-btn");
+    // Handle map resizing on window resize
+    window.addEventListener('resize', function() {
+      map.invalidateSize();
+    });
 
-      if (list.style.display === "none" || list.style.display === "") {
-        list.style.display = "block";
-        toggleBtn.textContent = "Փակել ցուցակը";
-      } else {
-        list.style.display = "none";
-        toggleBtn.textContent = "Բացել ցուցակը";
-      }
-    }
-
-    loadMedicalCenters();
-  </script>
-</body>
-</html>
+    // Detect mobile devices and initialize the panel accordingly
+    function initializeLayout() {
+      const leftPanel = document.getElementById('left-panel');
+      const rightPanel = document.getElementById('right-panel');
+      const

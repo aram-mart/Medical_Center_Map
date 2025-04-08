@@ -63,28 +63,23 @@
       margin-bottom: 10px;
     }
 
-    #search {
+    #search,
+    #categori-filter,
+    #city-filter {
       width: 80%;
-      max-width: 400px;
+      max-width: 500px;
       padding: 8px;
       font-size: 16px;
       border: 1px solid #ccc;
       border-radius: 5px;
     }
 
-    #categori-filter-container {
+    #categori-filter-container,
+    #city-filter-container {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-top: 10px;
-    }
-
-    #categori-filter {
-      width: 80%;
-      padding: 8px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
     }
 
     #clear-filters-btn {
@@ -177,7 +172,8 @@
       }
 
       #search,
-      #categori-filter {
+      #categori-filter,
+      #city-filter {
         width: 90%;
       }
     }
@@ -220,8 +216,17 @@
             <option value="Ամբուլատոր կենտրոն">Ամբուլատոր կենտրոն</option>
             <option value="Բուժ․ Կենտրոն">Բուժ․ Կենտրոն</option>
           </select>
-      
-          <!-- Button with icon -->
+        </div>
+
+        <div id="city-filter-container">
+          <label for="city-filter"></label>
+          <select id="city-filter" onchange="filterMarkers()">
+            <option value="">Ընտրել քաղաքը</option>
+            <option value="Երևան">Երևան</option>
+            <option value="Գյումրի">Գյումրի</option>
+            <option value="Վանաձոր">Վանաձոր</option>
+          </select>
+
           <button id="clear-filters-btn" onclick="clearFilters()" style="background: none; border: none; cursor: pointer;">
             <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/filter.png" alt="Clear Filters" style="width: 30px; height: 30px;"/>
           </button>
@@ -334,11 +339,13 @@
     function filterMarkers() {
       const searchQuery = document.getElementById("search").value.toLowerCase();
       const selectedcategori = document.getElementById("categori-filter").value;
+      const selectedcity = document.getElementById("city-filter").value;
 
       const filtered = allCenters.filter(center => {
         const matchesName = center.name.toLowerCase().includes(searchQuery);
         const matchescategori = !selectedcategori || (center.categori && center.categori === selectedcategori);
-        return matchesName && matchescategori;
+        const matchesCity = !selectedcity || (center.address && center.address.includes(selectedcity));
+        return matchesName && matchescategori && matchesCity;
       });
 
       displayMarkers(filtered);
@@ -346,10 +353,9 @@
     }
 
     function clearFilters() {
-      // Reset both the search input and category filter
       document.getElementById("search").value = '';
       document.getElementById("categori-filter").value = '';
-
+      document.getElementById("city-filter").value = '';
       filterMarkers();
     }
 

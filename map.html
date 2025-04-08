@@ -118,9 +118,6 @@
       filter: brightness(0.8);
     }
 
-
-
-    /* Screen-reader-only labels */
     .visually-hidden {
       position: absolute;
       width: 1px;
@@ -151,12 +148,12 @@
       border-radius: 5px;
       cursor: pointer;
       background: white;
-      transition: background 0.2s, border-color 0.2s; /* Transition for smooth color change */
+      transition: background 0.2s, border-color 0.2s;
     }
 
     .center-item:hover {
-      background-color: #f1f1f1; /* Light grey background on hover */
-      border-color: #007bff; /* Change border color to indicate interactivity */
+      background-color: #f1f1f1;
+      border-color: #007bff;
     }
 
     .center-item a {
@@ -184,45 +181,6 @@
       background-color: #0056b3;
     }
 
-
-    @media (max-width: 768px) {
-      #main-container {
-        flex-direction: column;
-        height: auto;
-      }
-
-      #left-panel {
-        width: 100%;
-        max-height: 280px;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-        overflow-y: auto;
-      }
-
-      #right-panel {
-        width: 100%;
-        flex-grow: 1;
-        height: calc(100vh - 70px - 280px);
-      }
-
-      #map {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-      }
-
-      h2 {
-        font-size: 18px;
-        margin: 10px;
-      }
-
-      #search,
-      #categori-filter,
-      #city-filter {
-        width: 95%;
-      }
-    }
-
     #bottom-line {
       background-color: white;
       width: 100%;
@@ -246,8 +204,44 @@
     }
 
     @media (max-width: 768px) {
-      .text-font_size {
-        font-size: 10px;
+      #main-container {
+        flex-direction: column;
+        height: auto;
+      }
+
+      #left-panel {
+        width: 100%;
+        max-height: 300px;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        overflow-y: auto;
+      }
+
+      #right-panel {
+        width: 100%;
+        flex-grow: 1;
+        height: calc(100vh - 70px - 300px);
+      }
+
+      #map {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+
+      h2 {
+        font-size: 18px;
+        margin: 10px;
+      }
+
+      #search,
+      #categori-filter,
+      #city-filter {
+        width: 95%;
+      }
+
+      #centers-list {
+        display: none; /* Hide list by default on small screens */
       }
     }
 
@@ -256,9 +250,27 @@
     }
 
     @media (max-width: 768px) {
+      .text-font_size {
+        font-size: 10px;
+      }
       .text-font_size_title {
         font-size: 13px;
       }
+    }
+
+    #toggle-list-btn {
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      font-size: 14px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #toggle-list-btn:hover {
+      background-color: #0056b3;
     }
 
   </style>
@@ -272,6 +284,8 @@
   <div id="main-container">
     <div id="left-panel">
       <div id="search-container">
+        <button id="toggle-list-btn" onclick="toggleCentersList()">Բացել ցուցակը</button>
+
         <input type="text" id="search" placeholder="🔍 Փնտրել Բ/Կ-ի անունով" oninput="filterMarkers()" aria-label="Փնտրել Բ/Կ-ի անունով">
       
         <div id="filter-row">
@@ -288,8 +302,7 @@
             <option value="Պոլիկլինիկա">Պոլիկլինիկա</option>
             <option value="Օպտիկա">Օպտիկա</option>
           </select>
-    
-          
+
           <label for="city-filter" class="visually-hidden">Քաղաք</label>
           <select id="city-filter" class="filter-select" onchange="filterMarkers()">
             <option value="">Ընտրել քաղաքը</option>
@@ -344,16 +357,13 @@
             <option value="Վահան">Վահան</option>
           </select>
           
-          
 
           <button id="clear-filters-btn" onclick="clearFilters()" aria-label="Մաքրել ֆիլտրերը">
             <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/filter.png" alt="Clear Filters" />
           </button>
         </div>
-        
       </div>
-      
-      
+
       <div id="centers-list"></div>
     </div>
 
@@ -435,20 +445,20 @@
         div.className = 'center-item';
 
         div.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <b class="text-font_size_title ">${center.name}</b>
-                <p class="text-font_size">${center.categori}</p>
-              </div>
-              ${center.url ? `<a href="${center.url}" target="_blank" class="view-website-btn" style="text-decoration: none; background: none; border: none; color: inherit;">
-                <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/web.png" alt="View Website" style="width: 35px; height: 35px;">
-              </a>` : ''}
-            </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
+              <b class="text-font_size_title">${center.name}</b>
+              <p class="text-font_size">${center.categori}</p>
+            </div>
+            ${center.url ? `<a href="${center.url}" target="_blank" class="view-website-btn" style="text-decoration: none; background: none; border: none; color: inherit;">
+              <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/web.png" alt="View Website" style="width: 35px; height: 35px;">
+            </a>` : ''}
+          </div>
+          <div>
             <p class="text-font_size">${center.address}</p>
             <p class="text-font_size"><a href="tel:${center.phone_number?.replace(/\s+/g, '')}">${center.phone_number || "No phone available"}</a></p>
-            </div>
-          `;
+          </div>
+        `;
 
         div.onclick = () => {
           map.setView([center.lat, center.lng], 15);
@@ -480,6 +490,19 @@
       document.getElementById("categori-filter").value = '';
       document.getElementById("city-filter").value = '';
       filterMarkers();
+    }
+
+    function toggleCentersList() {
+      const list = document.getElementById("centers-list");
+      const toggleBtn = document.getElementById("toggle-list-btn");
+
+      if (list.style.display === "none" || list.style.display === "") {
+        list.style.display = "block";
+        toggleBtn.textContent = "Փակել ցուցակը";
+      } else {
+        list.style.display = "none";
+        toggleBtn.textContent = "Բացել ցուցակը";
+      }
     }
 
     loadMedicalCenters();

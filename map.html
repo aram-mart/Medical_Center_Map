@@ -42,6 +42,7 @@
     #main-container {
       display: flex;
       height: calc(100vh - 70px);
+      position: relative;
     }
 
     #left-panel {
@@ -51,11 +52,46 @@
       border-right: 1px solid #ddd;
       height: 100%;
       background-color: #f9f9f9;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    #left-panel.hidden {
+      transform: translateX(-100%);
+      position: absolute;
+      z-index: 999;
     }
 
     #right-panel {
       width: 75%;
       height: 100%;
+      transition: width 0.3s ease-in-out;
+    }
+
+    #right-panel.expanded {
+      width: 100%;
+    }
+
+    #toggle-panel-btn {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      z-index: 1000;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    #toggle-panel-btn img {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
     }
 
     #search-container {
@@ -118,6 +154,7 @@
       filter: brightness(0.8);
     }
 
+    /* Screen-reader-only labels */
     .visually-hidden {
       position: absolute;
       width: 1px;
@@ -181,6 +218,65 @@
       background-color: #0056b3;
     }
 
+    @media (max-width: 768px) {
+      #main-container {
+        flex-direction: column;
+        height: auto;
+      }
+
+      #left-panel {
+        width: 100%;
+        max-height: 280px;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        overflow-y: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 999;
+      }
+
+      #left-panel.hidden {
+        transform: translateY(-100%);
+      }
+
+      #right-panel {
+        width: 100%;
+        flex-grow: 1;
+        height: calc(100vh - 70px);
+      }
+
+      #right-panel.expanded {
+        margin-top: 0;
+      }
+
+      #toggle-panel-btn {
+        top: auto;
+        bottom: 20px;
+      }
+
+      #map {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+
+      h2 {
+        font-size: 18px;
+        margin: 10px;
+      }
+
+      #search,
+      #categori-filter,
+      #city-filter {
+        width: 95%;
+      }
+
+      header img {
+        margin-right: 10px;
+      }
+    }
+
     #bottom-line {
       background-color: white;
       width: 100%;
@@ -204,44 +300,8 @@
     }
 
     @media (max-width: 768px) {
-      #main-container {
-        flex-direction: column;
-        height: auto;
-      }
-
-      #left-panel {
-        width: 100%;
-        max-height: 300px;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-        overflow-y: auto;
-      }
-
-      #right-panel {
-        width: 100%;
-        flex-grow: 1;
-        height: calc(100vh - 70px - 300px);
-      }
-
-      #map {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-      }
-
-      h2 {
-        font-size: 18px;
-        margin: 10px;
-      }
-
-      #search,
-      #categori-filter,
-      #city-filter {
-        width: 95%;
-      }
-
-      #centers-list {
-        display: none; /* Hide list by default on small screens */
+      .text-font_size {
+        font-size: 10px;
       }
     }
 
@@ -250,29 +310,10 @@
     }
 
     @media (max-width: 768px) {
-      .text-font_size {
-        font-size: 10px;
-      }
       .text-font_size_title {
         font-size: 13px;
       }
     }
-
-    #toggle-list-btn {
-      margin-bottom: 10px;
-      padding: 8px 12px;
-      font-size: 14px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    #toggle-list-btn:hover {
-      background-color: #0056b3;
-    }
-
   </style>
 </head>
 <body>
@@ -282,10 +323,13 @@
   </header>
 
   <div id="main-container">
-    <div id="left-panel">
+    <button id="toggle-panel-btn" onclick="togglePanel()">
+      <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/menu.png" alt="Toggle" id="toggle-icon">
+      <span id="toggle-text">Բացել ցանկը</span>
+    </button>
+    
+    <div id="left-panel" class="hidden">
       <div id="search-container">
-        <button id="toggle-list-btn" onclick="toggleCentersList()">Բացել ցուցակը</button>
-
         <input type="text" id="search" placeholder="🔍 Փնտրել Բ/Կ-ի անունով" oninput="filterMarkers()" aria-label="Փնտրել Բ/Կ-ի անունով">
       
         <div id="filter-row">
@@ -302,7 +346,7 @@
             <option value="Պոլիկլինիկա">Պոլիկլինիկա</option>
             <option value="Օպտիկա">Օպտիկա</option>
           </select>
-
+    
           <label for="city-filter" class="visually-hidden">Քաղաք</label>
           <select id="city-filter" class="filter-select" onchange="filterMarkers()">
             <option value="">Ընտրել քաղաքը</option>
@@ -357,17 +401,16 @@
             <option value="Վահան">Վահան</option>
           </select>
           
-
           <button id="clear-filters-btn" onclick="clearFilters()" aria-label="Մաքրել ֆիլտրերը">
             <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/filter.png" alt="Clear Filters" />
           </button>
         </div>
       </div>
-
+      
       <div id="centers-list"></div>
     </div>
 
-    <div id="right-panel">
+    <div id="right-panel" class="expanded">
       <div id="map"></div>
     </div>
   </div>
@@ -377,6 +420,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     var map = L.map('map').setView([40.1792, 44.4991], 13);
+    var isPanelVisible = false;
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -386,6 +430,32 @@
     let markers = [];
     let allCenters = [];
 
+    // Toggle panel function
+    function togglePanel() {
+      const leftPanel = document.getElementById('left-panel');
+      const rightPanel = document.getElementById('right-panel');
+      const toggleText = document.getElementById('toggle-text');
+      const toggleIcon = document.getElementById('toggle-icon');
+      
+      leftPanel.classList.toggle('hidden');
+      rightPanel.classList.toggle('expanded');
+      
+      isPanelVisible = !leftPanel.classList.contains('hidden');
+      
+      if (isPanelVisible) {
+        toggleText.textContent = 'Փակել ցանկը';
+        toggleIcon.src = 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png';
+      } else {
+        toggleText.textContent = 'Բացել ցանկը';
+        toggleIcon.src = 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/menu.png';
+      }
+      
+      // Update map size after panel toggle to prevent display issues
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 300);
+    }
+
     async function loadMedicalCenters() {
       try {
         const response = await fetch("/api/centers");
@@ -394,7 +464,44 @@
         displayCentersList(allCenters);
       } catch (error) {
         console.error("Error loading medical centers:", error);
+        // For demo purposes, use mock data if API fails
+        useMockData();
       }
+    }
+
+    function useMockData() {
+      // Sample mock data for demonstration
+      allCenters = [
+        {
+          name: "էֆես ապահովագրական ընկերություն",
+          categori: "Ապահովագրություն",
+          address: "Երևան, Նալբանդյան 7/1",
+          phone_number: "+374 10 547773",
+          url: "https://efes.am",
+          lat: 40.1792,
+          lng: 44.4991
+        },
+        {
+          name: "Նորք-Մարաշ ԲԿ",
+          categori: "Բուժ․ Կենտրոն",
+          address: "Երևան, Արմենակյան 13",
+          phone_number: "+374 10 654365",
+          lat: 40.1743,
+          lng: 44.5120
+        },
+        {
+          name: "Վարդանանց նորարական բժշկության կենտրոն",
+          categori: "Բուժ․ Կենտրոն",
+          address: "Երևան, Վարդանանց 18/1",
+          phone_number: "+374 10 582333",
+          url: "https://vardanants.am",
+          lat: 40.1867,
+          lng: 44.5068
+        }
+      ];
+      
+      displayMarkers(allCenters);
+      displayCentersList(allCenters);
     }
 
     const customIcon = L.icon({
@@ -445,24 +552,29 @@
         div.className = 'center-item';
 
         div.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-              <b class="text-font_size_title">${center.name}</b>
-              <p class="text-font_size">${center.categori}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <b class="text-font_size_title ">${center.name}</b>
+                <p class="text-font_size">${center.categori}</p>
+              </div>
+              ${center.url ? `<a href="${center.url}" target="_blank" class="view-website-btn" style="text-decoration: none; background: none; border: none; color: inherit;">
+                <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/web.png" alt="View Website" style="width: 35px; height: 35px;">
+              </a>` : ''}
             </div>
-            ${center.url ? `<a href="${center.url}" target="_blank" class="view-website-btn" style="text-decoration: none; background: none; border: none; color: inherit;">
-              <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/web.png" alt="View Website" style="width: 35px; height: 35px;">
-            </a>` : ''}
-          </div>
-          <div>
+            <div>
             <p class="text-font_size">${center.address}</p>
             <p class="text-font_size"><a href="tel:${center.phone_number?.replace(/\s+/g, '')}">${center.phone_number || "No phone available"}</a></p>
-          </div>
-        `;
+            </div>
+          `;
 
         div.onclick = () => {
           map.setView([center.lat, center.lng], 15);
           center.marker.openPopup();
+          
+          // On mobile, close the panel after clicking an item
+          if (window.innerWidth <= 768) {
+            togglePanel();
+          }
         };
 
         listContainer.appendChild(div);
@@ -492,18 +604,10 @@
       filterMarkers();
     }
 
-    function toggleCentersList() {
-      const list = document.getElementById("centers-list");
-      const toggleBtn = document.getElementById("toggle-list-btn");
-
-      if (list.style.display === "none" || list.style.display === "") {
-        list.style.display = "block";
-        toggleBtn.textContent = "Փակել ցուցակը";
-      } else {
-        list.style.display = "none";
-        toggleBtn.textContent = "Բացել ցուցակը";
-      }
-    }
+    // Handle map resizing on window resize
+    window.addEventListener('resize', function() {
+      map.invalidateSize();
+    });
 
     loadMedicalCenters();
   </script>

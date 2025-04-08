@@ -241,12 +241,12 @@
       margin: 5px 0;
     }
 
-    .center-address {
+    .text-font_size {
       font-size: 12px;
     }
 
     @media (max-width: 768px) {
-      .center-address {
+      .text-font_size {
         font-size: 8px;
       }
     }
@@ -427,15 +427,15 @@
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div>
                 <b>${center.name}</b>
-                <p>${center.categori}</p>
+                <p class="text-font_size">${center.categori}</p>
               </div>
               ${center.url ? `<a href="${center.url}" target="_blank" class="view-website-btn" style="text-decoration: none; background: none; border: none; color: inherit;">
                 <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/web.png" alt="View Website" style="width: 35px; height: 35px;">
               </a>` : ''}
             </div>
             <div>
-            <p class="center-address">${center.address}</p>
-            <p><a href="tel:${center.phone_number?.replace(/\s+/g, '')}">${center.phone_number || "No phone available"}</a></p>
+            <p class="text-font_size">${center.address}</p>
+            <p class="text-font_size"><a href="tel:${center.phone_number?.replace(/\s+/g, '')}">${center.phone_number || "No phone available"}</a></p>
             </div>
           `;
 

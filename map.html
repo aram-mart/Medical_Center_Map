@@ -238,8 +238,10 @@
 </head>
 <body>
   <header>
-    <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
-    <h2>ԷՖԷՍ ապահովագրական ընկերության հետ համագործակցող բժշկական հաստատություններ</h2>
+    <a href="#" id="logo-link">
+      <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
+    </a>
+     <h2>ԷՖԷՍ ապահովագրական ընկերության հետ համագործակցող բժշկական հաստատություններ</h2>
   </header>
 
   <div id="main-container">
@@ -339,6 +341,15 @@
   <div id="bottom-line"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+
+<script>
+  document.getElementById("logo-link").addEventListener("click", function(event) {
+    event.preventDefault(); // Prevent the default reload
+    // Optionally do something, like scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
   <script>
     var map = L.map('map').setView([40.1792, 44.4991], 13);
 

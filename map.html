@@ -260,60 +260,33 @@
 
         
           <label for="city-filter" class="visually-hidden">Քաղաք</label>
-          <div class="city-filter-container">
-            <input type="text" id="city-search" class="city-search" placeholder="🔍 Փնտրել քաղաքը" oninput="filterCities()">
-            <select id="city-filter" class="filter-select" onchange="filterMarkers()">
-              <option value="">Ընտրել քաղաքը</option>
-              <option value="Երևան">Երևան</option>
-              <option value="Գյումրի">Գյումրի</option>
-              <option value="Վանաձոր">Վանաձոր</option>
-              <option value="Սպիտակ">Սպիտակ</option>
-              <option value="Աբովյան">Աբովյան</option>
-              <option value="Եղեգնաձոր">Եղեգնաձոր</option>
-              <option value="Կապան">Կապան</option>
-              <option value="Նոր Ջուղա">Նոր Ջուղա</option>
-              <option value="Սյունիք">Սյունիք</option>
-              <option value="Վայք">Վայք</option>
-              <option value="Մեղրի">Մեղրի</option>
-              <option value="Բերդ">Բերդ</option>
-              <option value="Երասխ">Երասխ</option>
-              <option value="Սևան">Սևան</option>
-              <option value="Աշտարակ">Աշտարակ</option>
-              <option value="Թալին">Թալին</option>
-              <option value="Դիլիջան">Դիլիջան</option>
-              <option value="Գորիս">Գորիս</option>
-              <option value="Հրազդան">Հրազդան</option>
-              <option value="Շիրակ">Շիրակ</option>
-              <option value="Արարատ">Արարատ</option>
-              <option value="Մասիս">Մասիս</option>
-              <option value="Գանձասար">Գանձասար</option>
-              <option value="Բաղրամյան">Բաղրամյան</option>
-            </select>
-          </div>
-          
-          <script>
-            // Function to filter cities based on the search input
-            function filterCities() {
-              const searchQuery = document.getElementById("city-search").value.toLowerCase();
-              const cityOptions = document.getElementById("city-filter").options;
-          
-              for (let i = 1; i < cityOptions.length; i++) { // Start from index 1 to skip the "Select City" option
-                const city = cityOptions[i].text.toLowerCase();
-                if (city.includes(searchQuery)) {
-                  cityOptions[i].style.display = "block";
-                } else {
-                  cityOptions[i].style.display = "none";
-                }
-              }
-            }
-          
-            // Function to filter the markers based on selected city
-            function filterMarkers() {
-              const selectedCity = document.getElementById("city-filter").value;
-              // Your existing code for filtering based on the selected city
-              // Update your map and markers here based on the selected city
-            }
-          </script>
+          <select id="city-filter" class="filter-select" onchange="filterMarkers()">
+            <option value="">Ընտրել քաղաքը</option>
+            <option value="Երևան">Երևան</option>
+            <option value="Գյումրի">Գյումրի</option>
+            <option value="Վանաձոր">Վանաձոր</option>
+            <option value="Սպիտակ">Սպիտակ</option>
+            <option value="Աբովյան">Աբովյան</option>
+            <option value="Եղեգնաձոր">Եղեգնաձոր</option>
+            <option value="Կապան">Կապան</option>
+            <option value="Նոր Ջուղա">Նոր Ջուղա</option>
+            <option value="Սյունիք">Սյունիք</option>
+            <option value="Վայք">Վայք</option>
+            <option value="Մեղրի">Մեղրի</option>
+            <option value="Բերդ">Բերդ</option>
+            <option value="Երասխ">Երասխ</option>
+            <option value="Սևան">Սևան</option>
+            <option value="Աշտարակ">Աշտարակ</option>
+            <option value="Թալին">Թալին</option>
+            <option value="Դիլիջան">Դիլիջան</option>
+            <option value="Գորիս">Գորիս</option>
+            <option value="Հրազդան">Հրազդան</option>
+            <option value="Շիրակ">Շիրակ</option>
+            <option value="Արարատ">Արարատ</option>
+            <option value="Մասիս">Մասիս</option>
+            <option value="Գանձասար">Գանձասար</option>
+            <option value="Բաղրամյան">Բաղրամյան</option>
+          </select>
           
 
           <button id="clear-filters-btn" onclick="clearFilters()" aria-label="Մաքրել ֆիլտրերը">

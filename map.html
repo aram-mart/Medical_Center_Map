@@ -6,7 +6,7 @@
   <title>Medical Centers Map</title>
 
   <!-- Google Fonts: Montserrat -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
@@ -17,16 +17,14 @@
       height: 100%;
       box-sizing: border-box;
       overflow: hidden;
-      background-color: #f9fafb;
     }
 
     header {
       display: flex;
       align-items: center;
-      padding: 10px 20px;
-      background-color: #ffffff;
-      border-bottom: 1px solid #e5e7eb;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      padding: 10px;
+      background-color: #f8f8f8;
+      border-bottom: 1px solid #ddd;
     }
 
     header img {
@@ -39,7 +37,6 @@
       text-align: center;
       flex-grow: 1;
       font-size: 22px;
-      color: #1f2937;
     }
 
     #main-container {
@@ -50,14 +47,13 @@
 
     #left-panel {
       width: 25%;
-      padding: 15px;
+      padding: 10px;
       overflow-y: auto;
-      border-right: 1px solid #e5e7eb;
+      border-right: 1px solid #ddd;
       height: 100%;
-      background-color: #ffffff;
+      background-color: #f9f9f9;
       transition: transform 0.3s ease, opacity 0.3s ease;
       opacity: 1;
-      box-shadow: 2px 0 5px rgba(0,0,0,0.05);
     }
 
     #left-panel.hidden {
@@ -71,8 +67,6 @@
       width: 75%;
       height: 100%;
       transition: width 0.3s ease;
-      background-color: #f9fafb;
-      position: relative;
     }
 
     #right-panel.expanded {
@@ -82,40 +76,35 @@
     #toggle-panel-btn {
       position: absolute;
       left: 10px;
-      top: 110px;
+      top: 110px; /* Moved below header */
       z-index: 1000;
       background-color: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 8px 12px;
       cursor: pointer;
       font-family: 'Montserrat', sans-serif;
       font-weight: 600;
       display: flex;
       align-items: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
-      color: #1f2937;
     }
 
     #toggle-panel-btn img {
       width: 20px;
       height: 20px;
-      margin-right: 8px;
+      margin-right: 5px;
       transition: transform 0.3s ease;
     }
 
     #toggle-panel-btn:hover {
-      background-color: #f3f4f6;
-      transform: translateY(-2px);
+      background-color: #f1f1f1;
     }
 
     #search-container {
       text-align: center;
-      margin-bottom: 20px;
-      background-color: #f3f4f6;
-      padding: 15px;
-      border-radius: 10px;
+      margin-bottom: 10px;
     }
 
     #search,
@@ -123,21 +112,10 @@
     #city-filter {
       width: 80%;
       max-width: 500px;
-      padding: 10px 12px;
-      font-size: 15px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background-color: white;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      transition: all 0.2s ease;
-    }
-
-    #search:focus,
-    #categori-filter:focus,
-    #city-filter:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
 
     #categori-filter-container,
@@ -145,26 +123,23 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 12px;
+      margin-top: 10px;
     }
 
     #filter-row {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 12px;
+      margin-top: 10px;
       gap: 10px;
     }
 
     .filter-select {
       width: 180px;
-      padding: 10px;
-      font-size: 15px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background-color: white;
-      cursor: pointer;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
 
     #clear-filters-btn {
@@ -176,16 +151,15 @@
       align-items: center;
       justify-content: center;
       height: 100%;
-      transition: transform 0.2s ease;
     }
 
     #clear-filters-btn img {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
     }
 
-    #clear-filters-btn:hover {
-      transform: rotate(15deg);
+    #clear-filters-btn:hover img {
+      filter: brightness(0.8);
     }
 
     /* Screen-reader-only labels */
@@ -206,111 +180,50 @@
       height: 90%;
       margin: 3% auto;
       display: block;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     .leaflet-control-attribution {
       display: none;
     }
 
-    #centers-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      padding: 5px;
-    }
-
     .center-item {
-      margin-bottom: 0;
-      padding: 15px;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
       cursor: pointer;
       background: white;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: background 0.2s, border-color 0.2s;
     }
 
     .center-item:hover {
-      background-color: #f8fafc;
-      border-color: #3b82f6;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      background-color: #f1f1f1;
+      border-color: #007bff;
     }
 
     .center-item a {
-      color: #1f2937;
+      color: black;
       text-decoration: none;
-      transition: color 0.2s ease;
     }
 
     .center-item a:hover {
-      color: #3b82f6;
       text-decoration: underline;
     }
 
-    .center-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 8px;
-    }
-
-    .center-info {
-      flex-grow: 1;
-    }
-
-    .center-category {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 500;
-      padding: 4px 8px;
-      background-color: #e5e7eb;
-      color: #4b5563;
-      border-radius: 4px;
-      margin-top: 4px;
-    }
-
-    .center-details {
-      margin-top: 8px;
-    }
-
-    .center-address {
-      display: flex;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .center-phone {
-      display: flex;
-      align-items: center;
-    }
-
-    .detail-icon {
-      width: 16px;
-      height: 16px;
-      margin-right: 8px;
-      opacity: 0.7;
-    }
-
     .view-website-btn {
-      background: none;
-      border: none;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s ease;
+      display: inline-block;
+      padding: 6px 12px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 14px;
+      text-decoration: none;
+      margin-top: 5px;
     }
 
     .view-website-btn:hover {
-      transform: scale(1.1);
-    }
-
-    .view-website-btn img {
-      width: 35px;
-      height: 35px;
+      background-color: #0056b3;
     }
 
     @media (max-width: 768px) {
@@ -330,7 +243,7 @@
         top: 0;
         left: 0;
         z-index: 999;
-        background-color: #ffffff;
+        background-color: #f9f9f9;
         transform: translateX(-100%);
         transition: transform 0.3s ease;
       }
@@ -350,17 +263,21 @@
         height: calc(100vh - 70px);
       }
 
+      #right-panel.expanded {
+        margin-top: 0;
+      }
+
       #toggle-panel-btn {
         top: 80px;
         left: 10px;
         position: fixed;
       }
 
+      /* Shift map slightly down to accommodate toggle button */
       #map {
         width: 100%;
         height: 100%;
         margin: 0;
-        border-radius: 0;
       }
 
       h2 {
@@ -377,10 +294,6 @@
       header img {
         margin-right: 10px;
       }
-      
-      #centers-list {
-        grid-template-columns: 1fr;
-      }
     }
 
     #bottom-line {
@@ -389,20 +302,16 @@
       position: fixed;
       bottom: 0;
       left: 0;
-      border-top: 1px solid #e5e7eb;
-      height: 5px;
+      border-top: 1px solid #ddd;
     }
 
     .center-item b {
       display: block;
       margin-bottom: 5px;
-      color: #1f2937;
-      font-weight: 600;
     }
 
     .center-item p {
       margin: 5px 0;
-      color: #4b5563;
     }
 
     .text-font_size {
@@ -411,18 +320,17 @@
 
     @media (max-width: 768px) {
       .text-font_size {
-        font-size: 13px;
+        font-size: 12px;
       }
     }
 
     .text-font_size_title {
       font-size: 16px;
-      font-weight: 600;
     }
 
     @media (max-width: 768px) {
       .text-font_size_title {
-        font-size: 15px;
+        font-size: 14px;
       }
     }
   </style>
@@ -662,17 +570,7 @@
 
         let marker = L.marker([center.lat, center.lng], { icon: iconToUse })
           .addTo(map)
-          .bindPopup(`
-            <div style="text-align: center;">
-              <b style="font-size: 16px; display: block; margin-bottom: 5px;">${center.name}</b>
-              <span style="font-size: 13px; color: #666; display: block; margin-bottom: 8px;">${center.categori}</span>
-              <span style="font-size: 14px; display: block;">${center.address}</span>
-              <span style="font-size: 14px; display: block; margin-top: 5px;">
-                <a href="tel:${center.phone_number?.replace(/\s+/g, '')}" style="color: #007bff;">${center.phone_number || "No phone available"}</a>
-              </span>
-              ${center.url ? `<a href="${center.url}" target="_blank" style="display: inline-block; margin-top: 8px; color: #007bff; font-size: 14px;">Կայք</a>` : ''}
-            </div>
-          `);
+          .bindPopup(`<b>${center.name}</b><br>${center.address}`);
 
         markers.push(marker);
         center.marker = marker;
@@ -694,28 +592,20 @@
         div.className = 'center-item';
 
         div.innerHTML = `
-          <div class="center-header">
-            <div class="center-info">
-              <b class="text-font_size_title">${center.name}</b>
-              <div class="center-category">${center.categori}</div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <b class="text-font_size_title ">${center.name}</b>
+                <p class="text-font_size">${center.categori}</p>
+              </div>
+              ${center.url ? `<a href="${center.url}" target="_blank" class="view-website-btn" style="text-decoration: none; background: none; border: none; color: inherit;">
+                <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/web.png" alt="View Website" style="width: 35px; height: 35px;">
+              </a>` : ''}
             </div>
-            ${center.url ? `
-              <a href="${center.url}" target="_blank" class="view-website-btn" aria-label="Visit website">
-                <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/web.png" alt="View Website">
-              </a>
-            ` : ''}
-          </div>
-          <div class="center-details">
-            <div class="center-address">
-              <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/location.png" alt="Address" class="detail-icon">
-              <p class="text-font_size">${center.address}</p>
+            <div>
+            <p class="text-font_size">${center.address}</p>
+            <p class="text-font_size"><a href="tel:${center.phone_number?.replace(/\s+/g, '')}">${center.phone_number || "No phone available"}</a></p>
             </div>
-            <div class="center-phone">
-              <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/phone.png" alt="Phone" class="detail-icon">
-              <p class="text-font_size"><a href="tel:${center.phone_number?.replace(/\s+/g, '')}">${center.phone_number || "No phone available"}</a></p>
-            </div>
-          </div>
-        `;
+          `;
 
         div.onclick = () => {
           map.setView([center.lat, center.lng], 15);
@@ -763,4 +653,36 @@
     function initializeLayout() {
       const leftPanel = document.getElementById('left-panel');
       const rightPanel = document.getElementById('right-panel');
-      const
+      const isMobile = window.innerWidth <= 768;
+      
+      if (isMobile) {
+        leftPanel.classList.add('hidden');
+        leftPanel.classList.remove('visible');
+        rightPanel.classList.add('expanded');
+        document.getElementById('toggle-text').textContent = 'Բացել ցանկը';
+        document.getElementById('toggle-icon').src = 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/menu.png';
+        document.getElementById('toggle-icon').style.transform = 'rotate(0deg)';
+        isPanelVisible = false;
+      } else {
+        // For desktop, ensure panel is visible by default
+        leftPanel.classList.remove('hidden');
+        rightPanel.classList.remove('expanded');
+        document.getElementById('toggle-text').textContent = 'Փակել ցանկը';
+        document.getElementById('toggle-icon').src = 'https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png';
+        document.getElementById('toggle-icon').style.transform = 'rotate(90deg)';
+        isPanelVisible = true;
+      }
+      
+      // Update map size
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 300);
+    }
+
+    window.addEventListener('load', initializeLayout);
+    window.addEventListener('resize', initializeLayout);
+    
+    loadMedicalCenters();
+  </script>
+</body>
+</html>

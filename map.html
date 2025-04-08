@@ -151,11 +151,12 @@
       border-radius: 5px;
       cursor: pointer;
       background: white;
-      transition: background 0.2s;
+      transition: background 0.2s, border-color 0.2s; /* Smooth transition for background and border */
     }
 
     .center-item:hover {
-      background-color: #f1f1f1;
+      background-color: #f1f1f1; /* Light grey background when hovered */
+      border-color: #007bff; /* Change border color to blue on hover */
     }
 
     .center-item a {
@@ -164,7 +165,7 @@
     }
 
     .center-item a:hover {
-      text-decoration: underline;
+      text-decoration: underline;  /* Underline the link on hover */
     }
 
     .view-website-btn {
@@ -180,8 +181,10 @@
     }
 
     .view-website-btn:hover {
-      background-color: #0056b3;
+      background-color: #0056b3; /* Darker blue when hovering over the button */
     }
+
+
 
     @media (max-width: 768px) {
       #main-container {
@@ -347,11 +350,11 @@
 
     function displayCentersList(centers) {
       const listContainer = document.getElementById('centers-list');
-      listContainer.innerHTML = '';
+      listContainer.innerHTML = '';  // Clear previous content
 
       centers.forEach(center => {
         const div = document.createElement('div');
-        div.className = 'center-item';
+        div.className = 'center-item';  // Add the class for styling
 
         div.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -359,19 +362,22 @@
                 <b>${center.name}</b>
                 <p>${center.categori}</p>
               </div>
-              ${center.url ? `<a href="${center.url}" target="_blank" class="view-website-btn" style="text-decoration: none; background: none; border: none; color: inherit;">
-                <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/web.png" alt="View Website" style="width: 30px; height: 30px;">
-              </a>` : ''}
+              ${center.url ? `
+                <a href="${center.url}" target="_blank" class="view-website-btn" style="text-decoration: none; background: none; border: none; color: inherit;">
+                  <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/web.png" alt="View Website" style="width: 30px; height: 30px;">
+                </a>` : ''}
             </div>
             <p>${center.address}</p>
             <p><a href="tel:${center.phone_number?.replace(/\s+/g, '')}">${center.phone_number || "No phone available"}</a></p>
           `;
 
+        // Add a click event to set the map view to the selected center and open its popup
         div.onclick = () => {
           map.setView([center.lat, center.lng], 15);
           center.marker.openPopup();
         };
 
+        // Append the created div to the list container
         listContainer.appendChild(div);
       });
     }

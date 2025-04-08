@@ -250,6 +250,17 @@
         font-size: 8px;
       }
     }
+
+    .text-font_size_title {
+      font-size: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .text-font_size_title {
+        font-size: 13px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -426,7 +437,7 @@
         div.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <b>${center.name}</b>
+                <b class="text-font_size_title ">${center.name}</b>
                 <p class="text-font_size">${center.categori}</p>
               </div>
               ${center.url ? `<a href="${center.url}" target="_blank" class="view-website-btn" style="text-decoration: none; background: none; border: none; color: inherit;">

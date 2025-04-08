@@ -82,18 +82,55 @@
       margin-top: 10px;
     }
 
-    #clear-filters-btn {
-      padding: 5px 10px;
-      background-color: #f44336;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 14px;
+    #filter-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      gap: 10px;
     }
 
-    #clear-filters-btn:hover {
-      background-color: #e53935;
+    .filter-select {
+      width: 180px;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #clear-filters-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    #clear-filters-btn img {
+      width: 28px;
+      height: 28px;
+    }
+
+    #clear-filters-btn:hover img {
+      filter: brightness(0.8);
+    }
+
+
+
+    /* Screen-reader-only labels */
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
     #map {
@@ -206,32 +243,32 @@
   <div id="main-container">
     <div id="left-panel">
       <div id="search-container">
-        <input type="text" id="search" placeholder="🔍 Փնտրել Բ/Կ-ի անունով" oninput="filterMarkers()">
+        <input type="text" id="search" placeholder="🔍 Փնտրել Բ/Կ-ի անունով" oninput="filterMarkers()" aria-label="Փնտրել Բ/Կ-ի անունով">
       
-        <div id="categori-filter-container">
-          <label for="categori-filter"></label>
-          <select id="categori-filter" onchange="filterMarkers()">
+        <div id="filter-row">
+          <label for="categori-filter" class="visually-hidden">Կատեգորիա</label>
+          <select id="categori-filter" class="filter-select" onchange="filterMarkers()">
             <option value="">Ընտրել կատեգորիա</option>
             <option value="Ապահովագրություն">Ապահովագրություն</option>
             <option value="Ամբուլատոր կենտրոն">Ամբուլատոր կենտրոն</option>
             <option value="Բուժ․ Կենտրոն">Բուժ․ Կենտրոն</option>
           </select>
-        </div>
-
-        <div id="city-filter-container">
-          <label for="city-filter"></label>
-          <select id="city-filter" onchange="filterMarkers()">
+        
+          <button id="clear-filters-btn" onclick="clearFilters()" aria-label="Մաքրել ֆիլտրերը">
+            <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/filter.png" alt="Clear Filters" />
+          </button>
+        
+          <label for="city-filter" class="visually-hidden">Քաղաք</label>
+          <select id="city-filter" class="filter-select" onchange="filterMarkers()">
             <option value="">Ընտրել քաղաքը</option>
             <option value="Երևան">Երևան</option>
             <option value="Գյումրի">Գյումրի</option>
             <option value="Վանաձոր">Վանաձոր</option>
           </select>
-
-          <button id="clear-filters-btn" onclick="clearFilters()" style="background: none; border: none; cursor: pointer;">
-            <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/filter.png" alt="Clear Filters" style="width: 30px; height: 30px;"/>
-          </button>
         </div>
+        
       </div>
+      
       
       <div id="centers-list"></div>
     </div>

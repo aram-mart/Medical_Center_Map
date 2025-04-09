@@ -420,8 +420,8 @@
       <!-- Move button container inside right panel -->
       <div id="open-button-container">
         <button id="open-list-btn">
-          <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png" alt="Open List" id="list-icon">
-          <span id="btn-text">Փակել ցանկը</span><!-- Changed text to "Close List" since panel is open by default -->
+          <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png" alt="Open List" id="list-icon">
+          <span id="btn-text">Փակել ցանկը</span>
         </button>
       </div>
     </div>
@@ -459,12 +459,14 @@
         leftPanel.classList.add('collapsed');
         rightPanel.classList.add('expanded');
         btnText.textContent = 'Բացել ցանկը';
+        listIcon.src = "https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png";
         panelState = 'closed';
       } else {
         // Open the panel
         leftPanel.classList.remove('collapsed');
         rightPanel.classList.remove('expanded');
         btnText.textContent = 'Փակել ցանկը';
+        listIcon.src = "https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png";
         panelState = 'open';
       }
       
@@ -473,6 +475,7 @@
         map.invalidateSize();
       }, 300);
     }
+      
 
     // Check window size and adjust layout
     function checkWindowSize() {
@@ -480,6 +483,7 @@
       updateLayoutForScreenSize();
     }
     
+
     function updateLayoutForScreenSize() {
       // For mobile devices, we might want to start with panel closed
       if (isMobile && panelState === 'open') {
@@ -487,6 +491,7 @@
         leftPanel.classList.add('collapsed');
         rightPanel.classList.add('expanded');
         btnText.textContent = 'Բացել ցանկը';
+        listIcon.src = "https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png";
         panelState = 'closed';
       }
     }

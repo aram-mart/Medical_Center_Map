@@ -331,7 +331,8 @@
   </header>
 
   <div id="main-container">
-    <div id="left-panel" class="collapsed">
+    <!-- Removed 'collapsed' class to show the panel by default -->
+    <div id="left-panel">
       <div id="search-container">
         <input type="text" id="search" placeholder="🔍 Փնտրել Բ/Կ-ի անունով" oninput="filterMarkers()" aria-label="Փնտրել Բ/Կ-ի անունով">
       
@@ -413,13 +414,14 @@
       <div id="centers-list"></div>
     </div>
 
-    <div id="right-panel" class="expanded">
+    <!-- Removed 'expanded' class to show proper width with panel open -->
+    <div id="right-panel">
       <div id="map"></div>
       <!-- Move button container inside right panel -->
       <div id="open-button-container">
         <button id="open-list-btn">
           <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png" alt="Open List" id="list-icon">
-          <span id="btn-text">Բացել ցանկը</span>
+          <span id="btn-text">Փակել ցանկը</span><!-- Changed text to "Close List" since panel is open by default -->
         </button>
       </div>
     </div>
@@ -430,7 +432,8 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     var map = L.map('map').setView([40.1792, 44.4991], 13);
-    var panelState = 'open'; // Initial state
+    // Changed initial state to 'open' to match the visual state
+    var panelState = 'open'; 
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -478,8 +481,14 @@
     }
     
     function updateLayoutForScreenSize() {
-      // We keep the initial state as closed for both mobile and desktop
-      // This can be changed if needed
+      // For mobile devices, we might want to start with panel closed
+      if (isMobile && panelState === 'open') {
+        // Only auto-close on initial load for mobile
+        leftPanel.classList.add('collapsed');
+        rightPanel.classList.add('expanded');
+        btnText.textContent = 'Բացել ցանկը';
+        panelState = 'closed';
+      }
     }
 
     // Run on page load
@@ -598,6 +607,11 @@
       document.getElementById("city-filter").value = '';
       filterMarkers();
     }
+
+    // Make sure to invalidate map size after the panel is displayed
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 300);
 
     loadMedicalCenters();
   </script>

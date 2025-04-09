@@ -28,11 +28,6 @@
       position: relative;
     }
 
-    header img {
-      height: 80px;
-      margin-right: 200px;
-    }
-
     h2 {
       margin: 20px;
       text-align: center;
@@ -114,24 +109,28 @@
       border-radius: 5px;
     }
 
-    #clear-filters-btn {
-      background: none;
+    /* Restart button styles */
+    #restart-btn {
+      background-color: #007bff;
+      color: white;
       border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
       cursor: pointer;
-      padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100%;
+      gap: 5px;
+      font-weight: 600;
     }
 
-    #clear-filters-btn img {
-      width: 28px;
-      height: 28px;
+    #restart-btn:hover {
+      background-color: #0056b3;
     }
 
-    #clear-filters-btn:hover img {
-      filter: brightness(0.8);
+    #restart-btn img {
+      width: 20px;
+      height: 20px;
     }
 
     /* Screen-reader-only labels */
@@ -224,7 +223,7 @@
       font-size: 16px;
     }
 
-    /* New styles for the open button - MODIFIED */
+    /* Toggle panel button styles */
     #open-button-container {
       position: absolute;
       left: 20px; /* Position on the left side of the map */
@@ -254,17 +253,20 @@
       background-color: #f1f1f1;
     }
     
+    /* Restart button container */
+    #restart-button-container {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      z-index: 1000;
+    }
+    
     /* Responsive styles */
     @media (max-width: 768px) {
       header {
         flex-direction: column;
         align-items: center;
         padding-bottom: 0;
-      }
-      
-      header img {
-        margin-right: 0;
-        margin-bottom: 5px;
       }
       
       h2 {
@@ -295,7 +297,6 @@
         left: -100%;
       }
 
-
       #right-panel {
         width: 100%;
         height: 100%;
@@ -321,12 +322,18 @@
         left: 10px;
         z-index: 1000;
       }
+      
+      #restart-button-container {
+        position: fixed;
+        top: 20px;
+        right: 10px;
+        z-index: 1000;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
     <h2>ԷՖԷՍ ապահովագրական ընկերության հետ համագործակցող բժշկական հաստատություններ</h2>
   </header>
 
@@ -404,10 +411,6 @@
             <option value="Շաղատ">Շաղատ</option>
             <option value="Վահան">Վահան</option>
           </select>
-          
-          <button id="clear-filters-btn" onclick="clearFilters()" aria-label="Մաքրել ֆիլտրերը">
-            <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/filter.png" alt="Clear Filters" />
-          </button>
         </div>
       </div>
       
@@ -417,11 +420,19 @@
     <!-- Removed 'expanded' class to show proper width with panel open -->
     <div id="right-panel">
       <div id="map"></div>
-      <!-- Move button container inside right panel -->
+      <!-- Panel toggle button -->
       <div id="open-button-container">
         <button id="open-list-btn">
-          <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png" alt="Open List" id="list-icon">
+          <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png" alt="Toggle List" id="list-icon">
           <span id="btn-text">Փակել ցանկը</span>
+        </button>
+      </div>
+      
+      <!-- New restart button -->
+      <div id="restart-button-container">
+        <button id="restart-btn">
+          <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/restart.png" alt="Restart">
+          <span>Վերսկսել</span>
         </button>
       </div>
     </div>
@@ -447,6 +458,8 @@
     let markers = [];
     let allCenters = [];
     let isMobile = window.innerWidth <= 768;
+    let initialMapView = [40.1792, 44.4991]; // Default center
+    let initialZoom = 13; // Default zoom
 
     // Setup toggle button
     const openListBtn = document.getElementById('open-list-btn');
@@ -454,8 +467,12 @@
     const rightPanel = document.getElementById('right-panel');
     const btnText = document.getElementById('btn-text');
     const listIcon = document.getElementById('list-icon');
+    
+    // Setup restart button
+    const restartBtn = document.getElementById('restart-btn');
 
     openListBtn.addEventListener('click', togglePanel);
+    restartBtn.addEventListener('click', restartApplication);
 
     function togglePanel() {
       if (panelState === 'open') {
@@ -479,7 +496,30 @@
         map.invalidateSize();
       }, 300);
     }
+    
+    function restartApplication() {
+      // Reset the map view
+      map.setView(initialMapView, initialZoom);
       
+      // Clear all filters
+      document.getElementById("search").value = '';
+      document.getElementById("categori-filter").value = '';
+      document.getElementById("city-filter").value = '';
+      
+      // Reload all centers
+      filterMarkers();
+      
+      // If panel is closed on mobile, keep it closed
+      // On desktop, ensure panel is open
+      if (!isMobile && panelState === 'closed') {
+        togglePanel();
+      }
+      
+      // Force map to update its size
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 300);
+    }
 
     // Check window size and adjust layout
     function checkWindowSize() {
@@ -487,7 +527,6 @@
       updateLayoutForScreenSize();
     }
     
-
     function updateLayoutForScreenSize() {
       // For mobile devices, we might want to start with panel closed
       if (isMobile && panelState === 'open') {
@@ -608,13 +647,6 @@
 
       displayMarkers(filtered);
       displayCentersList(filtered);
-    }
-
-    function clearFilters() {
-      document.getElementById("search").value = '';
-      document.getElementById("categori-filter").value = '';
-      document.getElementById("city-filter").value = '';
-      filterMarkers();
     }
 
     // Make sure to invalidate map size after the panel is displayed

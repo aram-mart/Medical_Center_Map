@@ -458,14 +458,14 @@
         // Close the panel
         leftPanel.classList.add('collapsed');
         rightPanel.classList.add('expanded');
-        btnText.textContent = 'Ցուցակ';
+        btnText.textContent = 'Բացել ցանկը';
         listIcon.src = "https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png";
         panelState = 'closed';
       } else {
         // Open the panel
         leftPanel.classList.remove('collapsed');
         rightPanel.classList.remove('expanded');
-        //btnText.textContent = 'Փակել ցանկը';
+        btnText.textContent = 'Փակել ցանկը';
         listIcon.src = "https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png";
         panelState = 'open';
       }

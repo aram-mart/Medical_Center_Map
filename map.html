@@ -51,11 +51,43 @@
       border-right: 1px solid #ddd;
       height: 100%;
       background-color: #f9f9f9;
+      transition: all 0.3s ease;
+    }
+
+    #left-panel.collapsed {
+      width: 0;
+      padding: 0;
+      overflow: hidden;
     }
 
     #right-panel {
       width: 75%;
       height: 100%;
+      transition: all 0.3s ease;
+    }
+    
+    #right-panel.expanded {
+      width: 100%;
+    }
+
+    #open-list-btn {
+      position: absolute;
+      left: 20px;
+      top: 100px;
+      z-index: 1000;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      display: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+    }
+
+    #open-list-btn:hover {
+      background-color: #f1f1f1;
     }
 
     #search-container {
@@ -117,8 +149,6 @@
     #clear-filters-btn:hover img {
       filter: brightness(0.8);
     }
-
-
 
     /* Screen-reader-only labels */
     .visually-hidden {
@@ -184,7 +214,6 @@
       background-color: #0056b3;
     }
 
-
     @media (max-width: 768px) {
       #main-container {
         flex-direction: column;
@@ -198,11 +227,20 @@
         border-bottom: 1px solid #ddd;
         overflow-y: auto;
       }
+      
+      #left-panel.collapsed {
+        max-height: 0;
+        padding: 0;
+      }
 
       #right-panel {
         width: 100%;
         flex-grow: 1;
         height: calc(100vh - 70px - 280px);
+      }
+      
+      #right-panel.expanded {
+        height: calc(100vh - 70px);
       }
 
       #map {
@@ -220,6 +258,12 @@
       #categori-filter,
       #city-filter {
         width: 95%;
+      }
+      
+      #open-list-btn {
+        top: auto;
+        bottom: 20px;
+        left: 20px;
       }
     }
 
@@ -261,6 +305,35 @@
       }
     }
 
+    /* New styles for the open button */
+    #open-button-container {
+      position: absolute;
+      top: 100px;
+      left: 10px;
+      z-index: 1000;
+    }
+
+    #open-list-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      font-weight: 600;
+    }
+
+    #open-list-btn img {
+      width: 20px;
+      height: 20px;
+    }
+
+    #open-list-btn:hover {
+      background-color: #f1f1f1;
+    }
   </style>
 </head>
 <body>
@@ -268,6 +341,13 @@
     <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
     <h2>ԷՖԷՍ ապահովագրական ընկերության հետ համագործակցող բժշկական հաստատություններ</h2>
   </header>
+
+  <div id="open-button-container">
+    <button id="open-list-btn">
+      <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png" alt="Open List" id="list-icon">
+      <span id="btn-text">Բացել ցանկը</span>
+    </button>
+  </div>
 
   <div id="main-container">
     <div id="left-panel">
@@ -344,15 +424,12 @@
             <option value="Վահան">Վահան</option>
           </select>
           
-          
-
           <button id="clear-filters-btn" onclick="clearFilters()" aria-label="Մաքրել ֆիլտրերը">
             <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/filter.png" alt="Clear Filters" />
           </button>
         </div>
         
       </div>
-      
       
       <div id="centers-list"></div>
     </div>
@@ -367,6 +444,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     var map = L.map('map').setView([40.1792, 44.4991], 13);
+    var panelState = 'open'; // Initial state
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -375,6 +453,57 @@
 
     let markers = [];
     let allCenters = [];
+
+    // Setup toggle button
+    const openListBtn = document.getElementById('open-list-btn');
+    const leftPanel = document.getElementById('left-panel');
+    const rightPanel = document.getElementById('right-panel');
+    const btnText = document.getElementById('btn-text');
+    const listIcon = document.getElementById('list-icon');
+
+    openListBtn.addEventListener('click', togglePanel);
+
+    function togglePanel() {
+      if (panelState === 'open') {
+        // Close the panel
+        leftPanel.classList.add('collapsed');
+        rightPanel.classList.add('expanded');
+        btnText.textContent = 'Բացել ցանկը';
+        panelState = 'closed';
+      } else {
+        // Open the panel
+        leftPanel.classList.remove('collapsed');
+        rightPanel.classList.remove('expanded');
+        btnText.textContent = 'Փակել ցանկը';
+        panelState = 'open';
+      }
+      
+      // Force map to update its size
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 300);
+    }
+
+    // Check initial window size and set panel state accordingly
+    function checkWindowSize() {
+      if (window.innerWidth <= 768) {
+        // On mobile, start with panel closed
+        leftPanel.classList.add('collapsed');
+        rightPanel.classList.add('expanded');
+        btnText.textContent = 'Բացել ցանկը';
+        panelState = 'closed';
+      } else {
+        // On desktop, start with panel open
+        btnText.textContent = 'Փակել ցանկը';
+        panelState = 'open';
+      }
+    }
+
+    // Run on page load
+    checkWindowSize();
+    
+    // Update when window is resized
+    window.addEventListener('resize', checkWindowSize);
 
     async function loadMedicalCenters() {
       try {

@@ -254,7 +254,7 @@
       background-color: #f1f1f1;
     }
     
-    /* Responsive styles */
+    /* Responsive styles - MODIFIED for left panel on mobile */
     @media (max-width: 768px) {
       header {
         flex-direction: column;
@@ -273,7 +273,7 @@
       }
       
       #main-container {
-        flex-direction: column;
+        flex-direction: row; /* Keep as row for side panel */
         height: calc(100vh - 140px);
       }
       
@@ -281,16 +281,20 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 280px;
-        max-height: 280px;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
+        width: 80%; /* Use percentage width for mobile */
+        height: 100%; /* Full height */
+        max-height: none;
+        border-right: 1px solid #ddd;
         z-index: 999;
+        transform: translateX(0);
+        transition: transform 0.3s ease;
       }
       
       #left-panel.collapsed {
-        top: -280px;
+        width: 80%; /* Keep width the same */
+        padding: 10px; /* Keep padding */
+        transform: translateX(-100%); /* Move off-screen to the left */
+        overflow: hidden;
       }
       
       #right-panel {
@@ -305,17 +309,22 @@
       }
       
       .text-font_size {
-        font-size: 10px;
+        font-size: 12px;
       }
       
       .text-font_size_title {
-        font-size: 13px;
+        font-size: 14px;
       }
       
       #open-button-container {
         position: fixed;
-        top: 150px; /* Adjusted for mobile to be below header */
+        top: 10px;
         left: 10px;
+      }
+      
+      /* Add some padding to the centers list on mobile */
+      #centers-list {
+        padding-bottom: 50px;
       }
     }
   </style>
@@ -492,6 +501,41 @@
         displayCentersList(allCenters);
       } catch (error) {
         console.error("Error loading medical centers:", error);
+        
+        // For development testing without API
+        // Use sample data or comment this out if API is available
+        console.log("Using sample data for development");
+        const sampleCenters = [
+          {
+            name: "էֆես ապահովագրական ընկերություն",
+            categori: "Ապահովագրություն",
+            address: "Երևան, Վազգեն Սարգսյան 10, 110 սենյակ",
+            phone_number: "+374 10 54 00 01",
+            url: "https://www.efes.am",
+            lat: 40.1792,
+            lng: 44.5091
+          },
+          {
+            name: "Վարդանանց նորարական բժշկության կենտրոն",
+            categori: "Բուժ․ Կենտրոն",
+            address: "Երևան, Վարդանանց 18/1",
+            phone_number: "+374 10 58 93 00",
+            url: "https://vardanants.am",
+            lat: 40.1842,
+            lng: 44.5151
+          },
+          {
+            name: "Աստղիկ բժշկական կենտրոն",
+            categori: "Բուժ․ Կենտրոն",
+            address: "Երևան, Դանիել Վարուժան 28",
+            phone_number: "+374 10 20 20 10",
+            lat: 40.1902,
+            lng: 44.4991
+          }
+        ];
+        displayMarkers(sampleCenters);
+        displayCentersList(sampleCenters);
+        allCenters = sampleCenters;
       }
     }
 

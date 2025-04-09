@@ -25,6 +25,7 @@
       padding: 10px;
       background-color: #f8f8f8;
       border-bottom: 1px solid #ddd;
+      position: relative;
     }
 
     header img {
@@ -52,6 +53,7 @@
       height: 100%;
       background-color: #f9f9f9;
       transition: all 0.3s ease;
+      z-index: 900;
     }
 
     #left-panel.collapsed {
@@ -68,26 +70,6 @@
     
     #right-panel.expanded {
       width: 100%;
-    }
-
-    #open-list-btn {
-      position: absolute;
-      left: 20px;
-      top: 100px;
-      z-index: 1000;
-      background-color: white;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 8px 12px;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      display: none;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
-    }
-
-    #open-list-btn:hover {
-      background-color: #f1f1f1;
     }
 
     #search-container {
@@ -214,59 +196,6 @@
       background-color: #0056b3;
     }
 
-    @media (max-width: 768px) {
-      #main-container {
-        flex-direction: column;
-        height: auto;
-      }
-
-      #left-panel {
-        width: 100%;
-        max-height: 280px;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-        overflow-y: auto;
-      }
-      
-      #left-panel.collapsed {
-        max-height: 0;
-        padding: 0;
-      }
-
-      #right-panel {
-        width: 100%;
-        flex-grow: 1;
-        height: calc(100vh - 70px - 280px);
-      }
-      
-      #right-panel.expanded {
-        height: calc(100vh - 70px);
-      }
-
-      #map {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-      }
-
-      h2 {
-        font-size: 18px;
-        margin: 10px;
-      }
-
-      #search,
-      #categori-filter,
-      #city-filter {
-        width: 95%;
-      }
-      
-      #open-list-btn {
-        top: auto;
-        bottom: 20px;
-        left: 20px;
-      }
-    }
-
     #bottom-line {
       background-color: white;
       width: 100%;
@@ -289,28 +218,15 @@
       font-size: 14px;
     }
 
-    @media (max-width: 768px) {
-      .text-font_size {
-        font-size: 10px;
-      }
-    }
-
     .text-font_size_title {
       font-size: 16px;
     }
 
-    @media (max-width: 768px) {
-      .text-font_size_title {
-        font-size: 13px;
-      }
-    }
-
     /* New styles for the open button */
     #open-button-container {
-      position: absolute;
-      top: 100px;
-      left: 10px;
-      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     #open-list-btn {
@@ -324,6 +240,7 @@
       cursor: pointer;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
       font-weight: 600;
+      margin-top: 5px;
     }
 
     #open-list-btn img {
@@ -334,23 +251,89 @@
     #open-list-btn:hover {
       background-color: #f1f1f1;
     }
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: center;
+        padding-bottom: 0;
+      }
+      
+      header img {
+        margin-right: 0;
+        margin-bottom: 5px;
+      }
+      
+      h2 {
+        font-size: 18px;
+        margin: 5px 10px;
+      }
+      
+      #main-container {
+        flex-direction: column;
+        height: calc(100vh - 140px);
+      }
+      
+      #left-panel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 280px;
+        max-height: 280px;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        z-index: 999;
+      }
+      
+      #left-panel.collapsed {
+        top: -280px;
+      }
+      
+      #right-panel {
+        width: 100%;
+        height: 100%;
+      }
+      
+      #map {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+      }
+      
+      .text-font_size {
+        font-size: 10px;
+      }
+      
+      .text-font_size_title {
+        font-size: 13px;
+      }
+      
+      #open-list-btn {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1000;
+        padding: 5px 10px;
+      }
+    }
   </style>
 </head>
 <body>
   <header>
     <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
     <h2>ԷՖԷՍ ապահովագրական ընկերության հետ համագործակցող բժշկական հաստատություններ</h2>
+    <div id="open-button-container">
+      <button id="open-list-btn">
+        <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png" alt="Open List" id="list-icon">
+        <span id="btn-text">Բացել ցանկը</span>
+      </button>
+    </div>
   </header>
 
-  <div id="open-button-container">
-    <button id="open-list-btn">
-      <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png" alt="Open List" id="list-icon">
-      <span id="btn-text">Բացել ցանկը</span>
-    </button>
-  </div>
-
   <div id="main-container">
-    <div id="left-panel">
+    <div id="left-panel" class="collapsed">
       <div id="search-container">
         <input type="text" id="search" placeholder="🔍 Փնտրել Բ/Կ-ի անունով" oninput="filterMarkers()" aria-label="Փնտրել Բ/Կ-ի անունով">
       
@@ -369,7 +352,6 @@
             <option value="Օպտիկա">Օպտիկա</option>
           </select>
     
-          
           <label for="city-filter" class="visually-hidden">Քաղաք</label>
           <select id="city-filter" class="filter-select" onchange="filterMarkers()">
             <option value="">Ընտրել քաղաքը</option>
@@ -428,13 +410,12 @@
             <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/filter.png" alt="Clear Filters" />
           </button>
         </div>
-        
       </div>
       
       <div id="centers-list"></div>
     </div>
 
-    <div id="right-panel">
+    <div id="right-panel" class="expanded">
       <div id="map"></div>
     </div>
   </div>
@@ -444,7 +425,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     var map = L.map('map').setView([40.1792, 44.4991], 13);
-    var panelState = 'open'; // Initial state
+    var panelState = 'closed'; // Initial state
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -453,6 +434,7 @@
 
     let markers = [];
     let allCenters = [];
+    let isMobile = window.innerWidth <= 768;
 
     // Setup toggle button
     const openListBtn = document.getElementById('open-list-btn');
@@ -484,19 +466,15 @@
       }, 300);
     }
 
-    // Check initial window size and set panel state accordingly
+    // Check window size and adjust layout
     function checkWindowSize() {
-      if (window.innerWidth <= 768) {
-        // On mobile, start with panel closed
-        leftPanel.classList.add('collapsed');
-        rightPanel.classList.add('expanded');
-        btnText.textContent = 'Բացել ցանկը';
-        panelState = 'closed';
-      } else {
-        // On desktop, start with panel open
-        btnText.textContent = 'Փակել ցանկը';
-        panelState = 'open';
-      }
+      isMobile = window.innerWidth <= 768;
+      updateLayoutForScreenSize();
+    }
+    
+    function updateLayoutForScreenSize() {
+      // We keep the initial state as closed for both mobile and desktop
+      // This can be changed if needed
     }
 
     // Run on page load
@@ -582,6 +560,11 @@
         div.onclick = () => {
           map.setView([center.lat, center.lng], 15);
           center.marker.openPopup();
+          
+          // On mobile, close the panel after selecting a center
+          if (isMobile && panelState === 'open') {
+            togglePanel();
+          }
         };
 
         listContainer.appendChild(div);

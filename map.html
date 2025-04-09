@@ -43,6 +43,7 @@
     #main-container {
       display: flex;
       height: calc(100vh - 70px);
+      position: relative;
     }
 
     #left-panel {
@@ -66,6 +67,7 @@
       width: 75%;
       height: 100%;
       transition: all 0.3s ease;
+      position: relative;
     }
     
     #right-panel.expanded {
@@ -222,11 +224,12 @@
       font-size: 16px;
     }
 
-    /* New styles for the open button */
+    /* New styles for the open button - MODIFIED */
     #open-button-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: absolute;
+      left: 20px; /* Position on the left side of the map */
+      top: 20px; /* Position at the top */
+      z-index: 1000; /* Ensure it's above the map */
     }
 
     #open-list-btn {
@@ -240,7 +243,6 @@
       cursor: pointer;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
       font-weight: 600;
-      margin-top: 5px;
     }
 
     #open-list-btn img {
@@ -310,12 +312,10 @@
         font-size: 13px;
       }
       
-      #open-list-btn {
+      #open-button-container {
         position: fixed;
-        top: 10px;
+        top: 150px; /* Adjusted for mobile to be below header */
         left: 10px;
-        z-index: 1000;
-        padding: 5px 10px;
       }
     }
   </style>
@@ -324,12 +324,6 @@
   <header>
     <img src="https://static.wixstatic.com/media/1d13cb_80c44ec80813494aa81b7fc3cd51c0f2~mv2.png/v1/fill/w_136,h_95,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/efes-logo.png" alt="EFES Logo">
     <h2>ԷՖԷՍ ապահովագրական ընկերության հետ համագործակցող բժշկական հաստատություններ</h2>
-    <div id="open-button-container">
-      <button id="open-list-btn">
-        <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png" alt="Open List" id="list-icon">
-        <span id="btn-text">Բացել ցանկը</span>
-      </button>
-    </div>
   </header>
 
   <div id="main-container">
@@ -417,6 +411,13 @@
 
     <div id="right-panel" class="expanded">
       <div id="map"></div>
+      <!-- Move button container inside right panel -->
+      <div id="open-button-container">
+        <button id="open-list-btn">
+          <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png" alt="Open List" id="list-icon">
+          <span id="btn-text">Բացել ցանկը</span>
+        </button>
+      </div>
     </div>
   </div>
 

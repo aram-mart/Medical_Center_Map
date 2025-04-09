@@ -431,7 +431,11 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    var map = L.map('map').setView([40.1792, 44.4991], 13);
+    // Modified the map initialization to disable zoom control
+    var map = L.map('map', {
+      zoomControl: false  // This line disables the zoom control buttons
+    }).setView([40.1792, 44.4991], 13);
+    
     // Changed initial state to 'open' to match the visual state
     var panelState = 'open'; 
 

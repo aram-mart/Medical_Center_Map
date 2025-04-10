@@ -373,7 +373,7 @@
       
       .filter-select {
         width: 140px; /* Smaller on mobile */
-        font-size: 12px; /* UPDATED: Changed from 14px to 12px as requested */
+        font-size: 12px; /* Updated from 14px to 12px as requested */
         margin: 2px;
       }
       
@@ -535,9 +535,10 @@
     // Changed initial state to 'open' to match the visual state
     var panelState = 'open'; 
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // UPDATED: Changed tile provider to Cartodb Voyager which has less colorful styling and English labels
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
-      attribution: '© OpenStreetMap contributors'
+      attribution: '© OpenStreetMap contributors, © CARTO'
     }).addTo(map);
 
     let markers = [];

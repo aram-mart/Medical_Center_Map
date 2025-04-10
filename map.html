@@ -81,7 +81,15 @@
       padding-top: 10px;
     }
 
-    #search,
+    #search {
+      width: 60%; /* Reduced from 80% to 60% */
+      max-width: 400px; /* Reduced from 500px */
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
     #categori-filter,
     #city-filter {
       width: 80%;
@@ -136,7 +144,7 @@
       filter: brightness(0.8);
     }
 
-    /* Search close button styles */
+    /* Search close button styles - ENLARGED */
     #search-close-btn {
       position: absolute;
       right: 10px;
@@ -150,8 +158,8 @@
     }
     
     #search-close-btn img {
-      width: 24px;
-      height: 24px;
+      width: 32px; /* Increased from 24px */
+      height: 32px; /* Increased from 24px */
     }
     
     /* Hide the close button when panel is closed */
@@ -285,7 +293,7 @@
       background-color: #f1f1f1;
     }
     
-    /* Responsive styles */
+    /* Responsive styles - IMPROVED */
     @media (max-width: 768px) {
       header {
         flex-direction: column;
@@ -337,12 +345,34 @@
         margin: 0;
       }
       
+      /* Mobile-specific adjustments */
+      #search {
+        width: 70%; /* Adjusted size for mobile */
+        max-width: 250px;
+        font-size: 14px;
+      }
+      
+      .filter-select {
+        width: 140px; /* Smaller on mobile */
+        font-size: 14px;
+      }
+      
+      #search-close-btn {
+        right: 5px;
+        top: 8px;
+      }
+      
+      #search-close-btn img {
+        width: 28px; /* Slightly smaller on mobile but still larger than original */
+        height: 28px;
+      }
+      
       .text-font_size {
-        font-size: 10px;
+        font-size: 12px; /* Increased from 10px for better readability */
       }
       
       .text-font_size_title {
-        font-size: 13px;
+        font-size: 14px; /* Increased from 13px */
       }
       
       #open-button-container {

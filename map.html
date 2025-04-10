@@ -75,8 +75,10 @@
     }
 
     #search-container {
+      position: relative;
       text-align: center;
       margin-bottom: 10px;
+      padding-top: 10px;
     }
 
     #search,
@@ -132,6 +134,29 @@
 
     #clear-filters-btn:hover img {
       filter: brightness(0.8);
+    }
+
+    /* Search close button styles */
+    #search-close-btn {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #search-close-btn img {
+      width: 24px;
+      height: 24px;
+    }
+    
+    /* Hide the close button when panel is closed */
+    #left-panel.collapsed #search-close-btn {
+      display: none;
     }
 
     /* Screen-reader-only labels */
@@ -224,12 +249,18 @@
       font-size: 16px;
     }
 
-    /* New styles for the open button - MODIFIED */
+    /* Open button container styles */
     #open-button-container {
+      display: none; /* Hidden by default when panel is open */
       position: absolute;
-      left: 20px; /* Position on the left side of the map */
-      top: 20px; /* Position at the top */
-      z-index: 1000; /* Ensure it's above the map */
+      left: 20px;
+      top: 20px;
+      z-index: 1000;
+    }
+    
+    /* Show the open button when panel is collapsed */
+    #left-panel.collapsed ~ #right-panel #open-button-container {
+      display: block;
     }
 
     #open-list-btn {
@@ -295,7 +326,6 @@
         left: -100%;
       }
 
-
       #right-panel {
         width: 100%;
         height: 100%;
@@ -335,6 +365,11 @@
     <div id="left-panel">
       <div id="search-container">
         <input type="text" id="search" placeholder="🔍 Փնտրել Բ/Կ-ի անունով" oninput="filterMarkers()" aria-label="Փնտրել Բ/Կ-ի անունով">
+        
+        <!-- Add close button inside search container -->
+        <button id="search-close-btn" onclick="togglePanel()" aria-label="Փակել ցանկը">
+          <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png" alt="Close List">
+        </button>
       
         <div id="filter-row">
           <label for="categori-filter" class="visually-hidden">Կատեգորիա</label>
@@ -417,11 +452,11 @@
     <!-- Removed 'expanded' class to show proper width with panel open -->
     <div id="right-panel">
       <div id="map"></div>
-      <!-- Move button container inside right panel -->
+      <!-- Open button container shown when panel is closed -->
       <div id="open-button-container">
-        <button id="open-list-btn">
-          <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png" alt="Open List" id="list-icon">
-          <span id="btn-text">Փակել ցանկը</span>
+        <button id="open-list-btn" onclick="togglePanel()">
+          <img src="https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png" alt="Open List" id="list-icon">
+          <span id="btn-text">Բացել ցանկը</span>
         </button>
       </div>
     </div>
@@ -448,29 +483,21 @@
     let allCenters = [];
     let isMobile = window.innerWidth <= 768;
 
-    // Setup toggle button
-    const openListBtn = document.getElementById('open-list-btn');
+    // Get references to elements
     const leftPanel = document.getElementById('left-panel');
     const rightPanel = document.getElementById('right-panel');
-    const btnText = document.getElementById('btn-text');
-    const listIcon = document.getElementById('list-icon');
 
-    openListBtn.addEventListener('click', togglePanel);
-
+    // Toggle panel function
     function togglePanel() {
       if (panelState === 'open') {
         // Close the panel
         leftPanel.classList.add('collapsed');
         rightPanel.classList.add('expanded');
-        btnText.textContent = 'Բացել ցանկը';
-        listIcon.src = "https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png";
         panelState = 'closed';
       } else {
         // Open the panel
         leftPanel.classList.remove('collapsed');
         rightPanel.classList.remove('expanded');
-        btnText.textContent = '';
-        listIcon.src = "https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/close.png";
         panelState = 'open';
       }
       
@@ -479,7 +506,6 @@
         map.invalidateSize();
       }, 300);
     }
-      
 
     // Check window size and adjust layout
     function checkWindowSize() {
@@ -487,15 +513,12 @@
       updateLayoutForScreenSize();
     }
     
-
     function updateLayoutForScreenSize() {
       // For mobile devices, we might want to start with panel closed
       if (isMobile && panelState === 'open') {
         // Only auto-close on initial load for mobile
         leftPanel.classList.add('collapsed');
         rightPanel.classList.add('expanded');
-        btnText.textContent = 'Բացել ցանկը';
-        listIcon.src = "https://raw.githubusercontent.com/arammartirosyan1/Medical_Center_Map/main/icon/list.png";
         panelState = 'closed';
       }
     }
